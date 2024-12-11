@@ -1,4 +1,5 @@
-﻿namespace OOP2FinalProjectLibrary
+﻿using OOP2FinalProjectLibrary.Data;
+namespace OOP2FinalProjectLibrary
 {
     public partial class App : Application
     {
@@ -7,6 +8,8 @@
             InitializeComponent();
 
             MainPage = new MainPage();
+
+            DBHandler.InitializeDatabase();
         }
     }
 }
