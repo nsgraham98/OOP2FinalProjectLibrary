@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.IO;
+using System.Xml.Linq;
 
 namespace OOP2FinalProjectLibrary.Data
 {
@@ -34,6 +35,22 @@ namespace OOP2FinalProjectLibrary.Data
             }
             GetInitialDatabaseConnection();
             database.Close();
+        }
+
+        public int GetNextId(string tableName, string idColumnName, SQLiteConnection connection)
+        {
+            if (connection.State != System.Data.ConnectionState.Open)
+            {
+                connection.Open();
+            }
+
+            string selectQuery = $"SELECT MAX({idColumnName}) AS MaxId FROM {tableName}";
+
+            using (SQLiteCommand selectCmd = new SQLiteCommand(selectQuery, connection))
+            {
+                var result = selectCmd.ExecuteScalar();
+                return result == DBNull.Value ? 1 : Convert.ToInt32(result) + 1;
+            }
         }
     }
 }
