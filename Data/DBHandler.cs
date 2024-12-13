@@ -7,9 +7,6 @@ using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.IO;
 using System.Xml.Linq;
-using OOP2FinalProjectLibrary.Data.Objects.Items;
-using OOP2FinalProjectLibrary.Data.Objects;
-using OOP2FinalProjectLibrary.Data;
 
 namespace OOP2FinalProjectLibrary.Data
 {
