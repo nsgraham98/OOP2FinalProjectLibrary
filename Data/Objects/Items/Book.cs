@@ -16,6 +16,7 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
         public string Author { get => author; set => author = value; }
         public string Format { get => format; set => format = value; }
 
+        // full constructor
         public Book(int itemId, string title, string category, string publisher, string genre, string location, string status, float replaceCost, DateTime pubDate, string isbn, string author, string format)
             : base(itemId, title, category, publisher, genre, location, status, replaceCost, pubDate)
         {
@@ -23,6 +24,8 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
             this.Author = author;
             this.Format = format;       
         }
+
+        // constructor for how Book table is in DB
         public Book(int itemId, string title, string isbn, string author, string format)
         {
             ItemId = itemId;
@@ -31,6 +34,8 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
             this.Author = author;
             this.Format = format;
         }
+
+        // constructor with Item obj parameter
         public Book(Item item, string isbn, string author, string format)
         {
             this.ItemId = item.ItemId;

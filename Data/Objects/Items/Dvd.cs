@@ -16,6 +16,7 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
         public string Duration { get => duration; set => duration = value; }
         public string Format { get => format; set => format = value; }
 
+        // full constructor
         public Dvd(int itemId, string title, string category, string publisher, string genre, string location, string status, float replaceCost, DateTime pubDate, string director, string duration, string format)
             : base(itemId, title, category, publisher, genre, location, status, replaceCost, pubDate)
         {
@@ -23,6 +24,8 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
             this.Duration = duration;
             this.Format = format;
         }
+
+        // constructor for how DVD table is in DB
         public Dvd(int itemId, string title, string director, string duration, string format)
         {
             ItemId = itemId;
@@ -31,6 +34,8 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
             this.Duration = duration;
             this.Format = format;
         }
+
+        // constructor with Item obj parameter
         public Dvd(Item item, string director, string duration, string format)
         {
             this.ItemId = item.ItemId;

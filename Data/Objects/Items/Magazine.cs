@@ -16,6 +16,7 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
         public string Publication { get => publication; set => publication = value; }
         public DateTime CoverDate { get => coverDate; set => coverDate = value; }
 
+        // full constructor
         public Magazine(int itemId, string title, string category, string publisher, string genre, string location, string status, float replaceCost, DateTime pubDate, string issn, string publication, DateTime coverDate)
             : base(itemId, title, category, publisher, genre, location, status, replaceCost, pubDate)
         {
@@ -23,6 +24,8 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
             this.Publication = publication;
             this.CoverDate = coverDate;
         }
+
+        // constructor for how Magazine table is in DB
         public Magazine(int itemId, string title, string issn, string publication, DateTime coverDate)
         {
             ItemId = itemId;
@@ -31,6 +34,8 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
             this.Publication = publication;
             this.CoverDate = coverDate;
         }
+
+        // constructor with Item obj parameter
         public Magazine(Item item, string issn, string publication, DateTime coverDate)
         {
             this.ItemId = item.ItemId;

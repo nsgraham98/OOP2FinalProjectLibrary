@@ -53,8 +53,10 @@ namespace OOP2FinalProjectLibrary.Data
             }  
         }
 
-        // ==================================================================================================
-        // LOAD FUNCTIONS
+/* =====================================================================================
+ * LOAD FUNCTIONS 
+ *      - all Load functions return a List of all entries in DB of the specified type
+ */
         public List<Member> LoadMembersFromDB()
         {
             List<Member> memberList = new List<Member>();
@@ -137,7 +139,7 @@ namespace OOP2FinalProjectLibrary.Data
             }
             return iirList;
         }
-        public List<Item> LoadGenItemsFromDB()
+        public List<Item> LoadGenericItemsFromDB()
         {
             List<Item> itemList = new List<Item>();
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
@@ -169,6 +171,9 @@ namespace OOP2FinalProjectLibrary.Data
             }
             return itemList;
         }
+
+        // return List of all typed Item objects (Book, Audiobook, etc)
+        // function could be easily modified to return a specific Object List (see commented code within)
         public List<Item> LoadTypedItemsFromDB()
         {
             //List<Audiobook> abList = new List<Audiobook>();
@@ -278,144 +283,14 @@ namespace OOP2FinalProjectLibrary.Data
             }
             return itemList;
         }
-        //public List<Audiobook> LoadPartialAudiobookFromDB()
-        //{
-        //    List<Audiobook> abList = new List<Audiobook>();
-        //    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
-        //    {
-        //        string sql = "Select * from audiobook";
-        //        SQLiteCommand cmd = new SQLiteCommand(sql, connection);
-        //        using (cmd)
-        //        {
-        //            using (SQLiteDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    int itemId = reader.GetInt32(0);
-        //                    string title = reader.GetString(1);
-        //                    string isbn = reader.GetString(2);
-        //                    string author = reader.GetString(3);
-        //                    string duration = reader.GetString(4);
-        //                    string narrator = reader.GetString(5);
-
-        //                    Audiobook audiobook = new Audiobook(itemId, title, isbn, author, duration, narrator);
-        //                    abList.Add(audiobook);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return abList;
-        //}
-        //public List<Book> LoadPartialBookFromDB()
-        //{
-        //    List<Book> bookList = new List<Book>();
-        //    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
-        //    {
-        //        string sql = "Select * from book";
-        //        SQLiteCommand cmd = new SQLiteCommand(sql, connection);
-        //        using (cmd)
-        //        {
-        //            using (SQLiteDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    int itemId = reader.GetInt32(0);
-        //                    string title = reader.GetString(1);
-        //                    string isbn = reader.GetString(2);
-        //                    string author = reader.GetString(3);
-        //                    string format = reader.GetString(4);
-
-        //                    Book book = new Book(itemId, title, isbn, author, format);
-        //                    bookList.Add(book);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return bookList;
-        //}
-        //public List<Cd> LoadPartialCdFromDB()
-        //{
-        //    List<Cd> cdList = new List<Cd>();
-        //    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
-        //    {
-        //        string sql = "Select * from cd";
-        //        SQLiteCommand cmd = new SQLiteCommand(sql, connection);
-        //        using (cmd)
-        //        {
-        //            using (SQLiteDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    int itemId = reader.GetInt32(0);
-        //                    string title = reader.GetString(1);
-        //                    string artist = reader.GetString(2);
-        //                    string label = reader.GetString(3);
-        //                    string duration = reader.GetString(4);
-
-        //                    Cd cd = new Cd(itemId, title, artist, label, duration);
-        //                    cdList.Add(cd);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return cdList;
-        //}
-        //public List<Dvd> LoadPartialDvdFromDB()
-        //{
-        //    List<Dvd> dvdList = new List<Dvd>();
-        //    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
-        //    {
-        //        string sql = "Select * from dvd";
-        //        SQLiteCommand cmd = new SQLiteCommand(sql, connection);
-        //        using (cmd)
-        //        {
-        //            using (SQLiteDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    int itemId = reader.GetInt32(0);
-        //                    string title = reader.GetString(1);
-        //                    string director = reader.GetString(2);
-        //                    string duration = reader.GetString(3);
-        //                    string format = reader.GetString(4);
-
-        //                    Dvd dvd = new Dvd(itemId, title, director, duration, format);
-        //                    dvdList.Add(dvd);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return dvdList;
-        //}
-        //public List<Magazine> LoadPartialMagazineFromDB()
-        //{
-        //    List<Magazine> magList = new List<Magazine>();
-        //    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
-        //    {
-        //        string sql = "Select * from magazine";
-        //        SQLiteCommand cmd = new SQLiteCommand(sql, connection);
-        //        using (cmd)
-        //        {
-        //            using (SQLiteDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    int itemId = reader.GetInt32(0);
-        //                    string title = reader.GetString(1);
-        //                    string publication = reader.GetString(2);
-        //                    string issn = reader.GetString(3);
-        //                    DateTime coverDate = reader.GetDateTime(4);
-
-        //                    Magazine mag = new Magazine(itemId, title, publication, issn, coverDate);
-        //                    magList.Add(mag);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return magList;
-        //}
-
-        public static string InsertMemberDB(string lastName, string firstName, string phone, string email, string address)
+        
+/* =====================================================================================
+ * INSERT FUNCTIONS 
+ *      - most functions return a string as "proof" the function succesfully happened
+ *      - can use string as a front end pop up message or something
+ *      - insert functions do not require ID in parameter, ID is automatically generated (except ItemInRental, ID is not generated)
+ */
+        public string InsertMemberDB(string lastName, string firstName, string phone, string email, string address)
         {
             try
             {
@@ -499,7 +374,9 @@ namespace OOP2FinalProjectLibrary.Data
                 return ex.Message;
             }
         }
-        private Item InsertItemDB(string title, string category, string publisher, string genre,
+
+        // InsertItemDB is only used and accessed from Insert{child}DB functions
+        private bool InsertItemDB(string title, string category, string publisher, string genre,
             string location, string status, float replaceCost, DateTime pubDate)
         {
             try
@@ -524,11 +401,11 @@ namespace OOP2FinalProjectLibrary.Data
                         cmd.ExecuteNonQuery();
                     }
                 }
-                return new Item(newId, title, category, publisher, genre, location, status, replaceCost, pubDate);
+                return true;
             }       
             catch (Exception e) 
             {
-                throw;
+                return false;
             }
         }
 
@@ -539,26 +416,30 @@ namespace OOP2FinalProjectLibrary.Data
         {
             try
             {
-                Item item = InsertItemDB(title, category, publisher, genre,
-            location, status, replaceCost, pubDate);
+                bool wasInserted = InsertItemDB(title, category, publisher, genre,
+                                                location, status, replaceCost, pubDate);
 
-                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                if (wasInserted)
                 {
-                    connection.Open();
-                    string sql = "INSERT into book values(@id, @title, @bIsbn, @bAuthor, @bFormat)";
-
-                    using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
-                        cmd.Parameters.AddWithValue("@id", item.ItemId);
-                        cmd.Parameters.AddWithValue("@title", title);
-                        cmd.Parameters.AddWithValue("@bIsbn", isbn);
-                        cmd.Parameters.AddWithValue("@bAuthor", author);
-                        cmd.Parameters.AddWithValue("@bFormat", format);
+                        connection.Open();
+                        string sql = "INSERT into book values(@id, @title, @bIsbn, @bAuthor, @bFormat)";
 
-                        cmd.ExecuteNonQuery();
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@id", item.ItemId);
+                            cmd.Parameters.AddWithValue("@title", title);
+                            cmd.Parameters.AddWithValue("@bIsbn", isbn);
+                            cmd.Parameters.AddWithValue("@bAuthor", author);
+                            cmd.Parameters.AddWithValue("@bFormat", format);
+
+                            cmd.ExecuteNonQuery();
+                        }
                     }
+                    return "Book Successfully Added";
                 }
-                return "Book Successfully Added";
+                else { return "Error. Item was not Added"; }    
             }      
             catch (Exception ex)
             {
@@ -572,26 +453,29 @@ namespace OOP2FinalProjectLibrary.Data
         {
             try
             {
-                Item item = InsertItemDB(title, category, publisher, genre,
-            location, status, replaceCost, pubDate);
+                bool wasInserted = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
 
-                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                if (wasInserted)
                 {
-                    connection.Open();
-                    string sql = "INSERT into cd values(@id, @title, @cdArtist, @cdLabel, @cdDuration)";
-
-                    using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
-                        cmd.Parameters.AddWithValue("@id", item.ItemId);
-                        cmd.Parameters.AddWithValue("@title", title);
-                        cmd.Parameters.AddWithValue("@cdArtist", artist);
-                        cmd.Parameters.AddWithValue("@cdLabel", label);
-                        cmd.Parameters.AddWithValue("@cdDuration", duration);
+                        connection.Open();
+                        string sql = "INSERT into cd values(@id, @title, @cdArtist, @cdLabel, @cdDuration)";
 
-                        cmd.ExecuteNonQuery();
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@id", item.ItemId);
+                            cmd.Parameters.AddWithValue("@title", title);
+                            cmd.Parameters.AddWithValue("@cdArtist", artist);
+                            cmd.Parameters.AddWithValue("@cdLabel", label);
+                            cmd.Parameters.AddWithValue("@cdDuration", duration);
+
+                            cmd.ExecuteNonQuery();
+                        }
                     }
+                    return "CD Successfully Added";
                 }
-                return "CD Successfully Added";
+                else { return "Error. Item was not Added"; }              
             }           
             catch (Exception ex)
             {
@@ -605,26 +489,29 @@ namespace OOP2FinalProjectLibrary.Data
         {
             try
             {
-                Item item = InsertItemDB(title, category, publisher, genre,
-            location, status, replaceCost, pubDate);
+                bool wasInserted = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
 
-                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                if (wasInserted)
                 {
-                    connection.Open();
-                    string sql = "INSERT into dvd values(@id, @title, @dvddirector, @dvdduration, @dvdformat)";
-
-                    using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
-                        cmd.Parameters.AddWithValue("@id", item.ItemId);
-                        cmd.Parameters.AddWithValue("@title", title);
-                        cmd.Parameters.AddWithValue("@dvddirector", director);
-                        cmd.Parameters.AddWithValue("@dvdduration", duration);
-                        cmd.Parameters.AddWithValue("@dvdformat", format);
+                        connection.Open();
+                        string sql = "INSERT into dvd values(@id, @title, @dvddirector, @dvdduration, @dvdformat)";
 
-                        cmd.ExecuteNonQuery();
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@id", item.ItemId);
+                            cmd.Parameters.AddWithValue("@title", title);
+                            cmd.Parameters.AddWithValue("@dvddirector", director);
+                            cmd.Parameters.AddWithValue("@dvdduration", duration);
+                            cmd.Parameters.AddWithValue("@dvdformat", format);
+
+                            cmd.ExecuteNonQuery();
+                        }
                     }
+                    return "DVD Successfully Added";
                 }
-                return "DVD Successfully Added";
+                else { return "Error. Item was not added"; }             
             }          
             catch (Exception ex)
             {
@@ -638,25 +525,29 @@ namespace OOP2FinalProjectLibrary.Data
         {
             try
             {
-                Item item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+                bool wasInserted = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
 
-                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                if (wasInserted)
                 {
-                    connection.Open();
-                    string sql = "INSERT into dvd values(@id, @title, @magPub, @magIssn, @magCDate)";
-
-                    using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
-                        cmd.Parameters.AddWithValue("@id", item.ItemId);
-                        cmd.Parameters.AddWithValue("@title", title);
-                        cmd.Parameters.AddWithValue("@magPub", pubDate);
-                        cmd.Parameters.AddWithValue("@magIssn", issn);
-                        cmd.Parameters.AddWithValue("@magCDate", coverDate);
+                        connection.Open();
+                        string sql = "INSERT into magazine values(@id, @title, @magPub, @magIssn, @magCDate)";
 
-                        cmd.ExecuteNonQuery();
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@id", item.ItemId);
+                            cmd.Parameters.AddWithValue("@title", title);
+                            cmd.Parameters.AddWithValue("@magPub", pubDate);
+                            cmd.Parameters.AddWithValue("@magIssn", issn);
+                            cmd.Parameters.AddWithValue("@magCDate", coverDate);
+
+                            cmd.ExecuteNonQuery();
+                        }
                     }
+                    return "Magazine Successfully Added";
                 }
-                return $"Magazine Successfully Added";
+                else { return "Error. Item was not added"; }
             }
             catch (Exception ex)
             {
@@ -668,37 +559,79 @@ namespace OOP2FinalProjectLibrary.Data
             string location, string status, float replaceCost, DateTime pubDate,
                 string isbn, string author, string duration, string narrator)
         {
-            Item item = InsertItemDB(title, category, publisher, genre,
-            location, status, replaceCost, pubDate);
-
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            try
             {
-                try
+                bool wasInserted = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+
+                if (wasInserted)
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+
+                        connection.Open();
+                        string sql = "INSERT into audiobook values(@id, @title, @abIsbn, @abAuthor, @abDuration, @abNarrator)";
+
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@id", item.ItemId);
+                            cmd.Parameters.AddWithValue("@title", title);
+                            cmd.Parameters.AddWithValue("@abIsbn", isbn);
+                            cmd.Parameters.AddWithValue("@abAuthor", author);
+                            cmd.Parameters.AddWithValue("@abDuration", duration);
+                            cmd.Parameters.AddWithValue("@abNarrator", narrator);
+
+                            cmd.ExecuteNonQuery();
+                        }
+                        return "Audiobook Successfully Added";
+                    }
+                }
+                else { return "Error. Item was not Added"; }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }               
+        }
+
+        // used in conjunction with DeleteItemDB child functions to keep DB consistent
+        private Item InsertItemWhenErrorDB(Item item)
+        {
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
-                    string sql = "INSERT into dvd values(@id, @title, @abIsbn, @abAuthor, @abDuration, @abNarrator)";
+                    string sql = "INSERT into item values(@id, @t, @c, @p, @g, @l, @s, @rc, @pd)";
 
                     using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                     {
                         cmd.Parameters.AddWithValue("@id", item.ItemId);
-                        cmd.Parameters.AddWithValue("@title", title);
-                        cmd.Parameters.AddWithValue("@abIsbn", isbn);
-                        cmd.Parameters.AddWithValue("@abAuthor", author);
-                        cmd.Parameters.AddWithValue("@abDuration", duration);
-                        cmd.Parameters.AddWithValue("@abNarrator", narrator);
+                        cmd.Parameters.AddWithValue("@t", item.Title);
+                        cmd.Parameters.AddWithValue("@c", item.Category);
+                        cmd.Parameters.AddWithValue("@p", item.Publisher);
+                        cmd.Parameters.AddWithValue("@g", item.Genre);
+                        cmd.Parameters.AddWithValue("@l", item.Location);
+                        cmd.Parameters.AddWithValue("@s", item.Status);
+                        cmd.Parameters.AddWithValue("@rc", item.ReplaceCost);
+                        cmd.Parameters.AddWithValue("@pd", item.PubDate);
 
                         cmd.ExecuteNonQuery();
                     }
-                    return $"Audiobook Successfully Added";
                 }
-                catch (Exception ex)
-                {
-                    return ex.Message;
-                }
-            }            
+                return item;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
-        public static string UpdateMemberDB(int memberId, string lastName, string firstName, string phone, string email, string address)
+/* =====================================================================================
+ * UPDATE FUNCTIONS
+ *      - most functions return a string as "proof" the function succesfully happened
+ *      - can use string as a front end pop up message or something
+ */
+        public string UpdateMemberDB(Member m)
         {
             try
             {
@@ -709,12 +642,12 @@ namespace OOP2FinalProjectLibrary.Data
 
                     using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                     {
-                        cmd.Parameters.AddWithValue("@lastName", lastName);
-                        cmd.Parameters.AddWithValue("@firstName", firstName);
-                        cmd.Parameters.AddWithValue("@phone", phone);
-                        cmd.Parameters.AddWithValue("@email", email);
-                        cmd.Parameters.AddWithValue("@address", address);
-                        cmd.Parameters.AddWithValue("@memberId", memberId);
+                        cmd.Parameters.AddWithValue("@lastName", m.LastName);
+                        cmd.Parameters.AddWithValue("@firstName", m.FirstName);
+                        cmd.Parameters.AddWithValue("@phone", m.Phone);
+                        cmd.Parameters.AddWithValue("@email",m.Email);
+                        cmd.Parameters.AddWithValue("@address", m.Address);
+                        cmd.Parameters.AddWithValue("@memberId", m.MemberId);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -727,7 +660,7 @@ namespace OOP2FinalProjectLibrary.Data
                 return e.Message;
             }
         }
-        public static string UpdateRentalDB(int rentalId, int memberId, DateTime startDate, DateTime dueDate, DateTime? returnedDate, string rentStatus)
+        public string UpdateRentalDB(Rental r)
         {
             try
             {
@@ -738,12 +671,12 @@ namespace OOP2FinalProjectLibrary.Data
 
                     using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                     {
-                        cmd.Parameters.AddWithValue("@memberId", memberId);
-                        cmd.Parameters.AddWithValue("@startDate", startDate);
-                        cmd.Parameters.AddWithValue("@dueDate", dueDate);
-                        cmd.Parameters.AddWithValue("@returnedDate", returnedDate);
-                        cmd.Parameters.AddWithValue("@rentStatus", rentStatus);
-                        cmd.Parameters.AddWithValue("@rentalId", rentalId);
+                        cmd.Parameters.AddWithValue("@memberId", r.MemberId);
+                        cmd.Parameters.AddWithValue("@startDate", r.StartDate);
+                        cmd.Parameters.AddWithValue("@dueDate", r.DueDate);
+                        cmd.Parameters.AddWithValue("@returnedDate", r.ReturnedDate);
+                        cmd.Parameters.AddWithValue("@rentStatus", r.RentStatus);
+                        cmd.Parameters.AddWithValue("@rentalId", r.RentalId);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -756,7 +689,7 @@ namespace OOP2FinalProjectLibrary.Data
                 return e.Message;
             }
         }
-        public static string UpdateItemInRentalDB(int itemId, int rentalId, string itemStatus)
+        public string UpdateItemInRentalDB(ItemInRental ir)
         {
             try
             {
@@ -767,9 +700,9 @@ namespace OOP2FinalProjectLibrary.Data
 
                     using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                     {
-                        cmd.Parameters.AddWithValue("@itemId", itemId);
-                        cmd.Parameters.AddWithValue("@rentalId", rentalId);
-                        cmd.Parameters.AddWithValue("@itemStatus", itemStatus);
+                        cmd.Parameters.AddWithValue("@itemId", ir.ItemId);
+                        cmd.Parameters.AddWithValue("@rentalId", ir.RentalId);
+                        cmd.Parameters.AddWithValue("@itemStatus", ir.ItemStatus);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -783,5 +716,448 @@ namespace OOP2FinalProjectLibrary.Data
             }
         }
 
+        // UpdateItemDB is only used and accessed from Update{child}DB functions
+        private bool UpdateItemDB(Item i)
+        {
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string sql = "UPDATE item SET title=@title, category=@category, publisher=@publisher, genre=@genre location=@location status=@status replaceCost=@replaceCost pubDate=@pubDate WHERE itemId=@itemId";
+
+                    using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@title", i.Title);
+                        cmd.Parameters.AddWithValue("@category", i.Category);
+                        cmd.Parameters.AddWithValue("@publisher", i.Publisher);
+                        cmd.Parameters.AddWithValue("@genre", i.Genre);
+                        cmd.Parameters.AddWithValue("@location", i.Location);
+                        cmd.Parameters.AddWithValue("@status", i.Status);
+                        cmd.Parameters.AddWithValue("@replaceCost", i.ReplaceCost);
+                        cmd.Parameters.AddWithValue("@pubDate", i.PubDate);
+                        cmd.Parameters.AddWithValue("@itemId", i.ItemId);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public string UpdateAudiobookDB(Audiobook ab)
+        {
+            try
+            {
+                bool wasUpdated = UpdateItemDB(ab);
+
+                if (wasUpdated)
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        string sql = "UPDATE audiobook SET title=@title, isbn=@isbn, author=@author, duration=@duration, narrator=@narrator WHERE itemId=@itemId";
+
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@title", ab.Title);
+                            cmd.Parameters.AddWithValue("@isbn", ab.Isbn);
+                            cmd.Parameters.AddWithValue("@author", ab.Author);
+                            cmd.Parameters.AddWithValue("@duration", ab.Duration);
+                            cmd.Parameters.AddWithValue("@narrator", ab.Narrator);
+
+                            cmd.ExecuteNonQuery();
+                        }
+                        connection.Close();
+                    }
+                    return "Audiobook Updated Successfully";
+                }
+                else { return "Error. Item Was Not Updated"; }
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+        public string UpdateBookDB(Book b)
+        {
+            try
+            {
+                bool wasUpdated = UpdateItemDB(b);
+
+                if (wasUpdated)
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        string sql = "UPDATE book SET title=@title, isbn=@isbn, author=@author, format=@format WHERE itemId=@itemId";
+
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@title", b.Title);
+                            cmd.Parameters.AddWithValue("@isbn", b.Isbn);
+                            cmd.Parameters.AddWithValue("@author", b.Author);
+                            cmd.Parameters.AddWithValue("@format", b.Format);
+
+                            cmd.ExecuteNonQuery();
+                        }
+                        connection.Close();
+                    }
+                    return "Book Updated Successfully";
+                }
+                else { return "Error. Item Was Not Updated"; }
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+        public string UpdateCdDB(Cd cd)
+        {
+            try
+            {
+                bool wasUpdated = UpdateItemDB(cd);
+
+                if (wasUpdated)
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        string sql = "UPDATE book SET title=@title, artist=@artist, label=@label, duration=@duration WHERE itemId=@itemId";
+
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@title", cd.Title);
+                            cmd.Parameters.AddWithValue("@label", cd.Label);
+                            cmd.Parameters.AddWithValue("@artist", cd.Artist);
+                            cmd.Parameters.AddWithValue("@duration", cd.Duration);
+
+                            cmd.ExecuteNonQuery();
+                        }
+                        connection.Close();
+                    }
+                    return "CD Updated Successfully";
+                }
+                else { return "Error. Item Was Not Updated"; }
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+        public string UpdateDvdDB(Dvd dvd)
+        {
+            try
+            {
+                bool wasUpdated = UpdateItemDB(dvd);
+
+                if (wasUpdated)
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        string sql = "UPDATE book SET title=@title, director=@director, duration=@duration, format=@format WHERE itemId=@itemId";
+
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@title", dvd.Title);
+                            cmd.Parameters.AddWithValue("@director", dvd.Director);
+                            cmd.Parameters.AddWithValue("@duration", dvd.Duration);
+                            cmd.Parameters.AddWithValue("@format", dvd.Format);
+
+                            cmd.ExecuteNonQuery();
+                        }
+                        connection.Close();
+                    }
+                    return "DVD Updated Successfully";
+                }
+                else { return "Error. Item Was Not Updated"; }
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+        public string UpdateMagazineDB(Magazine m)
+        {
+            try
+            {
+                bool wasUpdated = UpdateItemDB(m);
+
+                if (wasUpdated)
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        string sql = "UPDATE book SET title=@title, publication=@publication, issn=@issn, coverDate=@coverDate WHERE itemId=@itemId";
+
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@title", m.Title);
+                            cmd.Parameters.AddWithValue("@publication", m.Publication);
+                            cmd.Parameters.AddWithValue("@issn", m.Issn);
+                            cmd.Parameters.AddWithValue("@coverDate", m.CoverDate);
+
+                            cmd.ExecuteNonQuery();
+                        }
+                        connection.Close();
+                    }
+                    return "Magazine Updated Successfully";
+                }
+                else { return "Error. Item Was Not Updated"; }
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+/* =====================================================================================
+ * DELETE FUNCTIONS
+ *      - most functions return a string as "proof" the function succesfully happened
+ *      - can use string as a front end pop up message or something
+ */
+        public string DeleteMemberDB(int memberId)
+        {
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = "DELETE FROM member WHERE memberId=@memberId";
+                    using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@memberId", memberId);
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                }
+                return "Member Deleted Successfully";
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+        public string DeleteRentalDB(int rentalId)
+        {
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = "DELETE FROM rental WHERE rentalId=@rentalId";
+                    using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@rentalId", rentalId);
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                }
+                return "Rental Deleted Successfully";
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+        public string DeleteItemInRentalDB(int rentalId, int itemId)
+        {
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = "DELETE FROM iteminrental WHERE rentalId=@rentalId AND itemId=@itemId";
+                    using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@rentalId", rentalId);
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                }
+                return "Item in Rental Deleted Successfully";
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        // DeleteItemDB is only used and accessed from Delete{child}DB functions
+        // Delete Item functions need the full Obj as parameter so they can rebuild item 
+        // table in DB in case of error halfway through the function
+        public bool DeleteItemDB(Item item)
+        {
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = "DELETE FROM item WHERE itemId=@itemId";
+                    using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@itemId", item.ItemId);
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
+                    }                   
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public string DeleteAudiobookDB(Audiobook ab)
+        {
+            bool wasDeleted = DeleteItemDB(ab);
+            if (wasDeleted)
+            {
+                try
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+                        connection.Open();
+                        string sql = "DELETE FROM audiobook WHERE itemId=@itemId";
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@itemId", ab.ItemId);
+                            cmd.ExecuteNonQuery();
+                            connection.Close();
+                        }
+                    }
+                    return "Audiobook Deleted Successfully";
+                }
+                catch (Exception e)
+                {
+                    InsertItemWhenErrorDB(ab);
+                    return e.Message;
+                }
+            }
+            else { return "Error. Item was not Deleted"; }
+        }
+        public string DeleteBookDB(Book book)
+        {
+            bool wasDeleted = DeleteItemDB(book);
+            if (wasDeleted)
+            {
+                try
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+                        connection.Open();
+                        string sql = "DELETE FROM book WHERE itemId=@itemId";
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@itemId", book.ItemId);
+                            cmd.ExecuteNonQuery();
+                            connection.Close();
+                        }
+                    }
+                    return "Book Deleted Successfully";
+                }
+                catch (Exception e)
+                {
+                    InsertItemWhenErrorDB(book);
+                    return e.Message;
+                }
+            }
+            else { return "Error. Item was not Deleted"; }
+        }
+        public string DeleteCdDB(Cd cd)
+        {
+            bool wasDeleted = DeleteItemDB(cd);
+            if (wasDeleted)
+            {
+                try
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+                        connection.Open();
+                        string sql = "DELETE FROM cd WHERE itemId=@itemId";
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@itemId", cd.ItemId);
+                            cmd.ExecuteNonQuery();
+                            connection.Close();
+                        }
+                    }
+                    return "CD Deleted Successfully";
+                }
+                catch (Exception e)
+                {
+                    InsertItemWhenErrorDB(cd);
+                    return e.Message;
+                }
+            }
+            else { return "Error. Item was not Deleted"; }
+        }
+        public string DeleteDvdDB(Dvd dvd)
+        {
+            bool wasDeleted = DeleteItemDB(dvd);
+            if (wasDeleted)
+            {
+                try
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+                        connection.Open();
+                        string sql = "DELETE FROM dvd WHERE itemId=@itemId";
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@itemId", dvd.ItemId);
+                            cmd.ExecuteNonQuery();
+                            connection.Close();
+                        }
+                    }
+                    return "DVD Deleted Successfully";
+                }
+                catch (Exception e)
+                {
+                    InsertItemWhenErrorDB(dvd);
+                    return e.Message;
+                }
+            }
+            else { return "Error. Item was not Deleted"; }
+        }
+        public string DeleteMagazineDB(Magazine mag)
+        {
+            bool wasDeleted = DeleteItemDB(mag);
+            if (wasDeleted)
+            {
+                try
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                    {
+                        connection.Open();
+                        string sql = "DELETE FROM magazine WHERE itemId=@itemId";
+                        using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                        {
+                            cmd.Parameters.AddWithValue("@itemId", mag.ItemId);
+                            cmd.ExecuteNonQuery();
+                            connection.Close();
+                        }
+                    }
+                    return "Magazine Deleted Successfully";
+                }
+                catch (Exception e)
+                {
+                    InsertItemWhenErrorDB(mag);
+                    return e.Message;
+                }
+            }
+            else { return "Error. Item was not Deleted"; }
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
         public string Label { get => label; set => label = value; }
         public string Duration { get => duration; set => duration = value; }
 
+        // full constructor
         public Cd(int itemId, string title, string category, string publisher, string genre, string location, string status, float replaceCost, DateTime pubDate, string artist, string label, string duration)
             : base(itemId, title, category, publisher, genre, location, status, replaceCost, pubDate)
         {
@@ -23,6 +24,8 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
             this.Label = label;
             this.Duration = duration;
         }
+
+        // constructor for how CD table is in DB
         public Cd(int itemId, string title, string artist, string label, string duration)
         {
             ItemId = itemId;
@@ -31,6 +34,8 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
             this.Label = label;
             this.Duration = duration;
         }
+
+        // constructor with Item obj parameter
         public Cd(Item item, string artist, string label, string duration)
         {
             this.ItemId = item.ItemId;

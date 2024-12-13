@@ -18,6 +18,7 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
         public string Duration { get => duration; set => duration = value; }
         public string Narrator { get => narrator; set => narrator = value; }
 
+        // full constructor
         public Audiobook(int itemId, string title, string category, string publisher, string genre, string location, string status, float replaceCost, DateTime pubDate, string isbn, string author, string duration, string narrator)
             : base(itemId, title, category, publisher, genre, location, status, replaceCost, pubDate)
         {
@@ -27,7 +28,7 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
             this.Narrator = narrator;
         }
 
-        // constructor for how Audiobook table in DB
+        // constructor for how Audiobook table is in DB
         public Audiobook(int itemId, string title, string isbn, string author, string duration, string narrator)
         {
             this.ItemId = itemId;
@@ -37,6 +38,8 @@ namespace OOP2FinalProjectLibrary.Data.Objects.Items
             this.Duration = duration;
             this.Narrator = narrator;
         }
+
+        // constructor with Item obj parameter
         public Audiobook(Item item, string isbn, string author, string duration, string narrator)
         {
             this.ItemId = item.ItemId;
