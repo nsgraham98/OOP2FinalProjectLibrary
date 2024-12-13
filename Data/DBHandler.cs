@@ -37,20 +37,18 @@ namespace OOP2FinalProjectLibrary.Data
             database.Close();
         }
 
-        public int GetNextId(string tableName, string idColumnName, SQLiteConnection connection)
+        public static int GetNextId(string tableName, string idColumnName)
         {
-            if (connection.State != System.Data.ConnectionState.Open)
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
-                connection.Open();
-            }
+                string selectQuery = $"SELECT MAX({idColumnName}) AS MaxId FROM {tableName}";
 
-            string selectQuery = $"SELECT MAX({idColumnName}) AS MaxId FROM {tableName}";
-
-            using (SQLiteCommand selectCmd = new SQLiteCommand(selectQuery, connection))
-            {
-                var result = selectCmd.ExecuteScalar();
-                return result == DBNull.Value ? 1 : Convert.ToInt32(result) + 1;
-            }
+                using (SQLiteCommand selectCmd = new SQLiteCommand(selectQuery, connection))
+                {
+                    var result = selectCmd.ExecuteScalar();
+                    return result == DBNull.Value ? 1 : Convert.ToInt32(result) + 1;
+                }
+            }  
         }
     }
 }
