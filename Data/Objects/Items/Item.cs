@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OOP2FinalProjectLibrary.Data.Objects.Items
 {
-    public abstract class Item
+    public class Item
     {
         int itemId;
         string title;
