@@ -16,8 +16,9 @@ namespace OOP2FinalProjectLibrary.Data.Objects
         DateTime? returnedDate;
         string rentStatus;
 
-        public Rental(int memberId, DateTime startDate, DateTime dueDate, DateTime? returnedDate, string rentStatus)
+        public Rental(int rentalId, int memberId, DateTime startDate, DateTime dueDate, DateTime? returnedDate, string rentStatus)
         {
+            this.rentalId = rentalId;
             this.memberId = memberId;
             this.startDate = startDate;
             this.dueDate = dueDate;
