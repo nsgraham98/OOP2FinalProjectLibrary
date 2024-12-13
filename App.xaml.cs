@@ -10,7 +10,6 @@ namespace OOP2FinalProjectLibrary
             MainPage = new MainPage();
 
             DBHandler.InitializeDatabase();
-            popIIR.TestScript();
         }
     }
 }

@@ -14,9 +14,12 @@ namespace OOP2FinalProjectLibrary.Data
 {
     public class DBHandler
     {
+        // C:\Users\[your user name]\AppData\Local\Packages\com.companyname.[project file name]\LocalState\library_rental.db
         static string dbPath = Path.Combine(FileSystem.AppDataDirectory, "library_rental.db");
+
         static SQLiteConnection database;
         static string connectionString = $"Data Source={dbPath}";
+
 
         public static SQLiteConnection GetInitialDatabaseConnection()
         {
@@ -27,17 +30,22 @@ namespace OOP2FinalProjectLibrary.Data
             return database;
         }
 
+        // function gets run on app startup (in App.xaml.cs)
+        /* checks if local copy of DB exists
+         *  - if not it creates it in users AppData directory
+         *  - template DB is located in Resources/Raw/library_rental.db */
         public static void InitializeDatabase()
         {
             if (!File.Exists(dbPath))
             {
-                using var stream = FileSystem.OpenAppPackageFileAsync("library_rental.db").Result;
+                using var stream = FileSystem.OpenAppPackageFileAsync("library_rental.db").Result; // template db
                 using var newFile = File.Create(dbPath);
                 stream.CopyTo(newFile);
             }
             GetInitialDatabaseConnection();
             database.Close();
         }
+
 
         public static int GetNextId(string tableName, string idColumnName)
         {
@@ -376,7 +384,7 @@ namespace OOP2FinalProjectLibrary.Data
         }
 
         // InsertItemDB is only used and accessed from Insert{child}DB functions
-        private bool InsertItemDB(string title, string category, string publisher, string genre,
+        private Item InsertItemDB(string title, string category, string publisher, string genre,
             string location, string status, float replaceCost, DateTime pubDate)
         {
             try
@@ -401,11 +409,11 @@ namespace OOP2FinalProjectLibrary.Data
                         cmd.ExecuteNonQuery();
                     }
                 }
-                return true;
+                return new Item(newId, title, category, publisher, genre, location, status, replaceCost, pubDate);
             }       
             catch (Exception e) 
             {
-                return false;
+                return null;
             }
         }
 
@@ -416,10 +424,8 @@ namespace OOP2FinalProjectLibrary.Data
         {
             try
             {
-                bool wasInserted = InsertItemDB(title, category, publisher, genre,
-                                                location, status, replaceCost, pubDate);
-
-                if (wasInserted)
+                Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+                if (item != null)
                 {
                     using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
@@ -453,9 +459,8 @@ namespace OOP2FinalProjectLibrary.Data
         {
             try
             {
-                bool wasInserted = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
-
-                if (wasInserted)
+                Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+                if (item != null)
                 {
                     using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
@@ -489,9 +494,8 @@ namespace OOP2FinalProjectLibrary.Data
         {
             try
             {
-                bool wasInserted = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
-
-                if (wasInserted)
+                Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+                if (item != null)
                 {
                     using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
@@ -525,9 +529,8 @@ namespace OOP2FinalProjectLibrary.Data
         {
             try
             {
-                bool wasInserted = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
-
-                if (wasInserted)
+                Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+                if (item != null)
                 {
                     using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
@@ -561,13 +564,11 @@ namespace OOP2FinalProjectLibrary.Data
         {
             try
             {
-                bool wasInserted = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
-
-                if (wasInserted)
+                Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+                if (item != null)
                 {
                     using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
-
                         connection.Open();
                         string sql = "INSERT into audiobook values(@id, @title, @abIsbn, @abAuthor, @abDuration, @abNarrator)";
 
