@@ -557,7 +557,8 @@ namespace OOP2FinalProjectLibrary.Data
                 return ex.Message;
             }
         }
-        public string InsertAudiobookDB(int itemId, string title, string category, string publisher, string genre, string location, string status, float replaceCost, DateTime pubDate,string isbn, string author, string duration, string narrator)
+        public string InsertAudiobookDB(
+            string title, string category, string publisher, string genre, string location, string status, float replaceCost, DateTime pubDate,string isbn, string author, string duration, string narrator)
         {
             try
             {

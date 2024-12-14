@@ -319,7 +319,7 @@
     private string location = "";
     private string status = "";
     private float replaceCost = 0;
-    private DateTime pubDate = null;
+    private DateTime pubDate = DateTime.MinValue;
 
     // displayed item child info fields
     private string isbn = "";
@@ -333,7 +333,7 @@
     private string publication = "";
     private string issn = "";
     private string duration = "";
-    private DateTime coverDate = null;
+    private DateTime coverDate = DateTime.MinValue;
 
     // displayed child field bools
     private bool audiobookFields = false;
@@ -349,7 +349,7 @@
     private string addGenre = "";
     private string addLocation = "";
     private float addReplaceCost = 0;
-    private DateTime addPubDate = null;
+    private DateTime addPubDate = DateTime.MinValue;
 
     // add item child fields
     private string addIsbn = "";
@@ -360,9 +360,9 @@
     private string addArtist = "";
     private string addLabel = "";
     private string addDirector = "";
-    private string addPublication = "";
+    private string addPublication = ""; 
     private string addIssn = "";
-    private DateTime addCoverDate = null;
+    private DateTime addCoverDate = DateTime.MinValue;
 
     // category dropdown in add item
     private bool isAddItemVisible = false;
@@ -442,13 +442,53 @@
 
     private void SearchItems()
     {
-        // Logic to search items based on criteria
-    }
-
-
-    private void AddNewItemInfo()
-    {
-        // Logic to add new item
+        DBHandler db = new DBHandler();
+        if (sCategory && searchField.ToLower() == "audiobook" || !sCategory)
+        {
+            AudiobookManager am = new AudiobookManager(db);
+            List<Audiobook> abList = am.SearchItem(searchField, sTitle, sCategory, sStatus, sLocation);
+            foreach (Audiobook ab in abList)
+            {
+                foundList.Add(ab);
+            }
+        }
+        else if (sCategory && searchField.ToLower() == "book" || !sCategory)
+        {
+            BookManager bm = new BookManager(db);
+            List<Book> bList = bm.SearchItem(searchField, sTitle, sCategory, sStatus, sLocation);
+            foreach (Book b in bList)
+            {
+                foundList.Add(b);
+            }
+        }
+        else if (sCategory && searchField.ToLower() == "cd" || !sCategory)
+        {
+            CdManager cdm = new CdManager(db);
+            List<Cd> cdList = cdm.SearchItem(searchField, sTitle, sCategory, sStatus, sLocation);
+            foreach (Cd cd in cdList)
+            {
+                foundList.Add(cd);
+            }
+        }
+        else if (sCategory && searchField.ToLower() == "dvd" || !sCategory)
+        {
+            DvdManager dvdm = new DvdManager(db);
+            List<Dvd> dvdList = dvdm.SearchItem(searchField, sTitle, sCategory, sStatus, sLocation);
+            foreach (Dvd dvd in dvdList)
+            {
+                foundList.Add(dvd);
+            }
+        }
+        else if (sCategory && searchField.ToLower() == "magazine" || !sCategory)
+        {
+            MagazineManager mm = new MagazineManager(db);
+            List<Magazine> magList = mm.SearchItem(searchField, sTitle, sCategory, sStatus, sLocation);
+            foreach (Magazine m in magList)
+            {
+                foundList.Add(m);
+            }
+        }
+        StateHasChanged();
     }
 
     private void EditItemInfo()
@@ -462,7 +502,7 @@
                     itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
                         isbn, author, duration, narrator);               
                 AudiobookManager abm = new AudiobookManager(db);
-                string updateMessage = abm.UpdateItem(ab);
+                message = abm.UpdateItem(ab);
             }
             if (category == "Book")
             {
@@ -470,7 +510,7 @@
                     itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
                         isbn, author, format);
                 BookManager bm = new BookManager(db);
-                string updateMessage = bm.UpdateItem(b);
+                message = bm.UpdateItem(b);
             }
             if (category == "Cd")
             {
@@ -478,7 +518,7 @@
                     itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
                         artist, label, duration);
                 CdManager cdm = new CdManager(db);
-                string updateMessage = cdm.UpdateItem(cd);
+                message = cdm.UpdateItem(cd);
             }
             if (category == "Dvd")
             {
@@ -486,7 +526,7 @@
                     itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
                         director, duration, format);
                 DvdManager dvdm = new DvdManager(db);
-                string updateMessage = dvdm.UpdateItem(dvd);
+                message = dvdm.UpdateItem(dvd);
             }
             if (category == "Magazine")
             {
@@ -494,7 +534,7 @@
                     itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
                         publication, issn, coverDate);
                 MagazineManager mm = new MagazineManager(db);
-                string updateMessage = mm.UpdateItem(m);
+                message = mm.UpdateItem(m);
             }
         }
     }
@@ -509,7 +549,7 @@
         location = "";
         status = "";
         replaceCost = 0;
-        pubDate = null;
+        pubDate = DateTime.MinValue;
 
         isbn = "";
         author = "";
@@ -522,19 +562,89 @@
         publication = "";
         issn = "";
         duration = "";
-        coverDate = null;
+        coverDate = DateTime.MinValue;
 
         StateHasChanged();
     }
 
     private void AddItem()
     {
-        // Logic to add item to rental
+        DBHandler db = new DBHandler();
+        if (addAudiobookFields)
+        {
+            AudiobookManager m = new AudiobookManager(db);
+            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "avaialable", addReplaceCost, addPubDate,
+            addIsbn, addAuthor, addDuration, addNarrator);
+        }
+        else if (addBookFields)
+        {
+            BookManager m = new BookManager(db);
+            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "avaialable", addReplaceCost, addPubDate,
+            addIsbn, addAuthor, addFormat);
+        }
+        else if (addCdFields)
+        {
+            CdManager m = new CdManager(db);
+            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "avaialable", addReplaceCost, addPubDate,
+            addArtist, addLabel, addDuration);
+        }
+        else if (addBookFields)
+        {
+            DvdManager m = new DvdManager(db);
+            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "avaialable", addReplaceCost, addPubDate,
+            addDirector, addDuration, addFormat);
+        }
+        else if (addBookFields)
+        {
+            MagazineManager m = new MagazineManager(db);
+            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "avaialable", addReplaceCost, addPubDate,
+            addPublication, addIssn, addCoverDate);
+        }
     }
 
     private void DeleteItem()
     {
-
+        DBHandler db = new DBHandler();
+        if (category == "Audiobook")
+        {
+            Audiobook ab = new Audiobook(
+                itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                    isbn, author, duration, narrator);
+            AudiobookManager abm = new AudiobookManager(db);
+            message = abm.DeleteItem(ab);
+        }
+        if (category == "Book")
+        {
+            Book b = new Book(
+                itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                    isbn, author, format);
+            BookManager bm = new BookManager(db);
+            message = bm.DeleteItem(b);
+        }
+        if (category == "Cd")
+        {
+            Cd cd = new Cd(
+                itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                    artist, label, duration);
+            CdManager cdm = new CdManager(db);
+            message = cdm.DeleteItem(cd);
+        }
+        if (category == "Dvd")
+        {
+            Dvd dvd = new Dvd(
+                itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                    director, duration, format);
+            DvdManager dvdm = new DvdManager(db);
+            message = dvdm.DeleteItem(dvd);
+        }
+        if (category == "Magazine")
+        {
+            Magazine m = new Magazine(
+                itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                    publication, issn, coverDate);
+            MagazineManager mm = new MagazineManager(db);
+            message = mm.DeleteItem(m);
+        }
     }
 
     private void ShowAddItemPopUp()

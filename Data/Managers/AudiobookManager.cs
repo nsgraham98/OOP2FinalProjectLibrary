@@ -36,7 +36,6 @@ namespace OOP2FinalProjectLibrary.Data.Managers
 			try
 			{
 				_dbHan.InsertAudiobookDB(
-					itemId,
 					title,
 					category,
 					publisher,
