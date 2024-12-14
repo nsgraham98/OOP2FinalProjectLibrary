@@ -1,44 +1,160 @@
 ﻿@page "/membership"
 @using OOP2FinalProjectLibrary
 @using OOP2FinalProjectLibrary.Data
-@using OOP2FinalProjectLibrary.Data.Objects
+@using OOP2FinalProjectLibrary.Data.Managers
 @using OOP2FinalProjectLibrary.Data.Objects.Items
-@inject NavigationManager navigationManager
+@using OOP2FinalProjectLibrary.Data.Objects
+
+
 <h2>Membership</h2>
 
 <h4>Enter Your Information to sign up</h4>
 
-@* <div class="membership">
+<div class="membership">
     <form>
-        <h3>Update Reservation</h3>
-        <label for="code">Code:</label>
-        <input type="text" name="code" @bind="@reservationCode" readonly/><br />
+        <label for="lastName">Last Name:</label>
+        <input type="text" name="lastName" @bind="@lastName" /><br />
 
-        <label for="flight">Flight:</label>
-    <input type="text" name="flight" @bind="@flightCode" readonly /><br />
+        <label for="firstName">First Name:</label>
+        <input type="text" name="firstName" @bind="@firstName" /><br />
 
-        <label for="airline">Airline:</label>
-    <input type="text" name="airline" @bind="@airlineName" readonly /><br />
+        <label for="memberId">Membership ID:</label>
+        <input type="text" name="memberId" @bind="@memberId" /><br />
 
-        <label for="cost">Cost:</label>
-    <input type="number" name="cost" @bind="@cost" readonly /><br />
+        <label for="phone">Phone:</label>
+        <input type="text" name="phone" @bind="@phone" /><br />
 
-        <label for="name">Name:</label>
-        <input type="text" name="name" @bind="@customerName" /><br />
+        <label for="email">Email:</label>
+        <input type="text" name="email" @bind="@email" /><br />
 
-        <label for="citizenship">Citizenship:</label>
-        <input type="text" name="citizenship" @bind="@citizenship"/><br />
+        <label for="address">Address:</label>
+        <input type="text" name="address" @bind="@address" /><br />
 
-        <label for="status">Status:</label>
-    <select name="status" @bind="@status">
-            <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-        </select>
 
-    <button type="button" @onclick="PassModifyReservation">Update</button>
-    <p>@reservationMessage</p>
-    </form>  *@
+        <button type="button" @onclick="SubmitForm">Submit</button>
+    </form>
+</div>
+<br />
+
+<div class="membership">
+    <h4>Search for a Membership</h4>
+    <form>
+        <label for="lastName">Last Name:</label>
+        <input type="text" name="lastName" @bind="@searchlastName" /><br />
+
+        <label for="firstName">First Name:</label>
+        <input type="text" name="firstName" @bind="@searchfirstName" /><br />
+
+        <label for="memberId">Membership ID:</label>
+        <input type="text" name="memberId" @bind="@searchmemberId" /><br />
+
+        <button type="button" @onclick="SearchMember">Search</button>
+    </form>
+</div>
+
+<div class="membership">
+    @foreach (Member resultmem in searchMembers)
+    {
+
+        <p class="memberResults">
+            <strong>Name: </strong> $"{@resultmem.FirstName} {@resultmem.LastName}"<br />
+            <strong>Membership Number: </strong> @resultmem.MemberId<br />
+        </p>
+        <button type="button" @onclick="() => UpdateFields(resultmem)">Select this member</button>
+    }
+</div>
 
 @code {
+    string lastName;
+    string firstName;
+    int memberId;
+    string phone;
+    string email;
+    string address;
+
+    string searchlastName;
+    string searchfirstName;
+    int searchmemberId;
+
+    // List<Member> Currentmembers = new List<Member>();
+
+
+    List<Member> Currentmembers = MemberManager.LoadAllMembers();
+    List<Member> searchMembers = new List<Member>();
+    // DBHandler DBHandler = new DBHandler();
+
+    private void SubmitForm()
+    {
+        // check all fields are filled
+        if (string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(firstName) || memberId <= 0 || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(address))
+        {
+            ShowAlertForIncompleteFields();
+            return;
+        }
+
+        // Create new Member object
+        var newMember = new Member()
+            {
+                LastName = lastName,
+                FirstName = firstName,
+                MemberId = memberId,
+                Phone = phone,
+                Email = email,
+                Address = address
+            };
+
+        // Add the new member object to list
+        Currentmembers.Add(newMember);
+    }
+
+    private async void ShowAlertForIncompleteFields(object sender, EventArgs e)
+    {
+        await DisplayAlert("Error", "Please fill in all fields", "OK");
+    }
+
+    //search list for memeber
+    public void SearchMember()
+    {
+        // Clear list
+        searchMembers.Clear();
+
+        // Iterate through the Currentmembers list
+        foreach (var mem in Currentmembers)
+        {
+            bool match = false; //set to false
+
+            // Check if any of the search parameters match ignoring casesens
+            if (!string.IsNullOrEmpty(searchfirstName) && mem.FirstName.Contains(searchfirstName, StringComparison.OrdinalIgnoreCase))
+            {
+                match = true;
+            }
+
+            if (!string.IsNullOrEmpty(searchlastName) && mem.LastName.Contains(searchlastName, StringComparison.OrdinalIgnoreCase))
+            {
+                match = true;
+            }
+
+            if (searchmemberId > 0 && mem.MemberId == searchmemberId)
+            {
+                match = true;
+            }
+
+            // If a match is found add to list (any match will set match to true)
+            if (match)
+            {
+                searchMembers.Add(mem);
+            }
+        }
+    }
+
+    private void UpdateFields(Member mem)// changes fields to match selected member
+    {
+        lastName = mem.LastName;
+        firstName = mem.FirstName;
+        memberId = mem.MemberId;
+        phone = mem.Phone;
+        email = mem.Email;
+        address = mem.Address;
+    }
 
 }

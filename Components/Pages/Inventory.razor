@@ -142,7 +142,8 @@
         <button type="submit" @onclick="EditItemInfo">Save</button>
         <button type="reset" @onclick="ClearFields">Clear</button>
         <button @onclick="ShowAddItemPopUp">Add to Rental</button>
-        
+    </div>
+    <div>
         @if (isAddItemVisible)
         {
             <div class="popup">
@@ -261,6 +262,13 @@
         }
 
     </div>
+    @if (alert)
+    {
+        <div class="alert-box">
+            <p>@message</p>
+            <button @onclick="CloseAlertBox">OK</button>
+        </div>
+    }
 </section>
 
 <style>
@@ -325,7 +333,7 @@
     private string publication = "";
     private string issn = "";
     private string duration = "";
-    private DateTime? coverDate = null;
+    private DateTime coverDate = null;
 
     // displayed child field bools
     private bool audiobookFields = false;
@@ -341,7 +349,7 @@
     private string addGenre = "";
     private string addLocation = "";
     private float addReplaceCost = 0;
-    private DateTime? addPubDate = null;
+    private DateTime addPubDate = null;
 
     // add item child fields
     private string addIsbn = "";
@@ -354,7 +362,7 @@
     private string addDirector = "";
     private string addPublication = "";
     private string addIssn = "";
-    private DateTime? addCoverDate = null;
+    private DateTime addCoverDate = null;
 
     // category dropdown in add item
     private bool isAddItemVisible = false;
@@ -363,6 +371,9 @@
     private bool addCdFields = false;
     private bool addDvdFields = false;
     private bool addMagazineFields = false;
+
+    private bool alert = false;
+    string message = "";
 
     // List of found items
     private List<Item> foundList = new List<Item>();
@@ -451,7 +462,7 @@
                     itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
                         isbn, author, duration, narrator);               
                 AudiobookManager abm = new AudiobookManager(db);
-                abm.UpdateItem(ab);
+                string updateMessage = abm.UpdateItem(ab);
             }
             if (category == "Book")
             {
@@ -459,7 +470,7 @@
                     itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
                         isbn, author, format);
                 BookManager bm = new BookManager(db);
-                bm.UpdateItem(b);
+                string updateMessage = bm.UpdateItem(b);
             }
             if (category == "Cd")
             {
@@ -467,7 +478,7 @@
                     itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
                         artist, label, duration);
                 CdManager cdm = new CdManager(db);
-                cdm.UpdateItem(cd);
+                string updateMessage = cdm.UpdateItem(cd);
             }
             if (category == "Dvd")
             {
@@ -475,7 +486,7 @@
                     itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
                         director, duration, format);
                 DvdManager dvdm = new DvdManager(db);
-                dvdm.UpdateItem(dvd);
+                string updateMessage = dvdm.UpdateItem(dvd);
             }
             if (category == "Magazine")
             {
@@ -483,7 +494,7 @@
                     itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
                         publication, issn, coverDate);
                 MagazineManager mm = new MagazineManager(db);
-                mm.UpdateItem(m);
+                string updateMessage = mm.UpdateItem(m);
             }
         }
     }
@@ -577,6 +588,14 @@
     {
         addFormat = e.Value?.ToString(); // Updates the `category` field
     }
+    private void ShowAlertBox()
+    {
+        alert = true;
+    }
 
+    private void CloseAlertBox()
+    {
+        alert = false;
+    }
 }
 
