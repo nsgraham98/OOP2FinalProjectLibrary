@@ -8,18 +8,20 @@ using System.Threading.Tasks;
 namespace OOP2FinalProjectLibrary.Data.Managers
 {
 	public interface IItemManager<T> where T : Item
-    {
-	
-			string AddItem(int itemId, string title, string category, string publisher, string genre,
-				string location, string status, float replaceCost, DateTime pubDate,
-				params object[] additionalParam); // For child-specific attributes
+	{
 
-			string UpdateItem(T item);
+		string AddItem(int itemId, string title, string category, string publisher, string genre,
+			string location, string status, float replaceCost, DateTime pubDate,
+			params object[] additionalParam); // For child-specific attributes
 
-			string DeleteItem(T item);
+		string UpdateItem(T item);
 
-			List<T> LoadAllItems();
+		string DeleteItem(T item);
 
-			T LoadItemById(int itemId);
-		}
+		List<T> LoadAllItems();
+
+		T LoadItemById(int itemId);
+
+		List<T> SearchItem(string searchField, bool isTitle, bool isCategory, bool isStatus, bool isLocation);
 	}
+}

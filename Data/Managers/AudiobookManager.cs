@@ -18,7 +18,7 @@ namespace OOP2FinalProjectLibrary.Data.Managers
 			_dbHan = dbHan;
 		}
 
-		public string AddItem(int itemId, string title, string category, string publisher, string genre,
+        public string AddItem(int itemId, string title, string category, string publisher, string genre,
 			string location, string status, float replaceCost, DateTime pubDate,
 			params object[] additionalParam)
 		{
@@ -104,5 +104,18 @@ namespace OOP2FinalProjectLibrary.Data.Managers
 		{
 			return _dbHan.LoadTypedItemsFromDB().OfType<Audiobook>().FirstOrDefault(ab => ab.ItemId == itemId);
 		}
-	}
+
+        public List<Audiobook> SearchItem(string searchField, bool isTitle, bool isCategory, bool isStatus, bool isLocation)
+        {
+
+            var allAbs = LoadAllItems();
+            var filteredAbs = allAbs.Where(audiobooks =>
+                (isTitle && audiobooks.Title.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isCategory && audiobooks.Category.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isStatus && audiobooks.Status.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isLocation && audiobooks.Location.Contains(searchField, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
+            return filteredAbs;
+        }
+    }
 }

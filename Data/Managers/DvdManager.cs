@@ -100,6 +100,17 @@ namespace OOP2FinalProjectLibrary.Data.Managers
 		{
 			return _dbHan.LoadTypedItemsFromDB().OfType<Dvd>().FirstOrDefault(d => d.ItemId == itemId);
 		}
-	}
+        public List<Dvd> SearchItem(string searchField, bool isTitle, bool isCategory, bool isStatus, bool isLocation)
+        {
+            var allDvds = LoadAllItems();
+            var filteredDvds = allDvds.Where(Dvd =>
+                (isTitle && Dvd.Title.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isCategory && Dvd.Category.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isStatus && Dvd.Status.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isLocation && Dvd.Location.Contains(searchField, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
+            return filteredDvds;
+        }
+    }
 }
 

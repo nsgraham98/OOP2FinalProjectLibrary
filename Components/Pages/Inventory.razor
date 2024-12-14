@@ -1,13 +1,582 @@
 ﻿@page "/inventory"
 @using OOP2FinalProjectLibrary
 @using OOP2FinalProjectLibrary.Data
+@using OOP2FinalProjectLibrary.Data.Managers
 @using OOP2FinalProjectLibrary.Data.Objects
 @using OOP2FinalProjectLibrary.Data.Objects.Items
 @inject NavigationManager navManager
 
-<h1>Inventory Manager</h1>
+<h3 class="heading">Inventory Manager</h3>
+<section class="grid">
+    <div class="box">
+        <h3>Search Inventory</h3>
+        <p>Search by:</p>
+        <input type="checkbox" @bind="sTitle">
+        <label for="title">Title</label><br />
+        <input type="checkbox" @bind="sStatus">
+        <label for="availability">Availability</label><br />
+        <input type="checkbox" @bind="sCategory">
+        <label for="category">Category</label>
+        <input type="checkbox" @bind="sLocation">
+        <label for="location">Location</label>
+        <br /><br />
+        <input type="text" placeholder="Search by Title, Category, Location" @bind="searchField">
+        <button @onclick="SearchItems">Search</button>
 
+        <select @onchange="PopulateItemFields">
+            @if (foundList.Any())
+            {
+                <option disabled selected="selected">Select Item</option>
+                @foreach (Item item in foundList)
+                {
+                    <option value="@item.ItemId">@item.ItemId : @item.Title</option>
+                }
+            }
+            else
+            {
+                <option disabled>No Items Found</option>
+            }
+        </select>
+    </div>
+    <div class="box">
 
+        <h3>Item Information</h3>
+            <label for="id">ID</label>
+            <input type="text" @bind="itemId" readonly />
+        <br />
+            <label for="title">Title</label>
+            <input type="text" @bind="title" />
+        <br />
+            <label for="category">Category</label>
+            <input type="text" @bind="category" />
+        <br />
+            <label for="publisher">Publisher</label>
+            <input type="text" @bind="publisher" />
+        <br />
+            <label for="genre">Genre</label>
+            <input type="text" @bind="genre" />
+        <br />
+            <label for="location">Location</label>
+            <input type="text" @bind="location" />
+        <br/>
+            <label for="status">Availability</label>
+            <input type="text" @bind="status" />
+        <br />
+            <label for="replacecost">Replacement Cost</label>
+            <input type="text" @bind="replaceCost" />
+        <br />
+            <label for="pubdate">Date Published</label>
+            <input type="text" @bind="pubDate" />
+        <br />
+        @if (audiobookFields)
+        {
+            <label for="isbn">ISBN (Format: 999-99-99999-99-9)</label>
+            <input type="text" @bind="addIsbn" />
+            <br />
+            <label for="author">Author</label>
+            <input type="text" @bind="addAuthor" />
+            <br />
+            <label for="duration">Duration</label>
+            <input type="text" @bind="addDuration" />
+            <br />
+            <label for="narrator">Narrator</label>
+            <input type="text" @bind="addNarrator" />
+            <br />
+        }
+        @if (bookFields)
+        {
+            <label for="isbn">ISBN (Format: 999-99-99999-99-9)</label>
+            <input type="text" @bind="addIsbn" />
+            <br />
+            <label for="author">Author</label>
+            <input type="text" @bind="addAuthor" />
+            <br />
+            <label for="format">Format</label>
+            <select @onchange="e => OnFormatChanged(e)">
+                <option value="softcover">Softcover</option>
+                <option value="hardcover">Hardcover</option>
+                <option value="ebook">EBook</option>
+            </select>
+            <br />
+        }
+        @if (cdFields)
+        {
+            <label for="artist">Artist</label>
+            <input type="text" @bind="addArtist" />
+            <br />
+            <label for="label">Label</label>
+            <input type="text" @bind="addLabel" />
+            <br />
+            <label for="duration">Duration</label>
+            <input type="text" @bind="addDuration" />
+            <br />
+        }
+        @if (dvdFields)
+        {
+            <label for="directior">Director</label>
+            <input type="text" @bind="addDirector" />
+            <br />
+            <label for="duration">Duration</label>
+            <input type="text" @bind="addDuration" />
+            <br />
+            <label for="format">Format</label>
+            <select @onchange="e => OnFormatChanged(e)">
+                <option value="dvd">DVD</option>
+                <option value="blu-ray">Blu-Ray</option>
+            </select>
+            <br />
+        }
+        @if (magazineFields)
+        {
+            <label for="publication">Publication</label>
+            <input type="text" @bind="addPublication" />
+            <br />
+            <label for="issn">ISSN (Format: 9999-9999)</label>
+            <input type="text" @bind="addLabel" />
+            <br />
+            <label for="coverdate">Cover Date</label>
+            <input type="date" @bind="addCoverDate" />
+            <br />
+        }
+        <button type="submit" @onclick="DeleteItem">Delete</button>
+        <button type="submit" @onclick="EditItemInfo">Save</button>
+        <button type="reset" @onclick="ClearFields">Clear</button>
+        <button @onclick="ShowAddItemPopUp">Add to Rental</button>
+        
+        @if (isAddItemVisible)
+        {
+            <div class="popup">
+                <div class="popup-content">
+
+                        <label for="title">Title</label>
+                        <input type="text" @bind="addTitle" />
+                    <br />
+                    <label for="category">Category</label>
+                        <select @onchange="e => OnCategoryChanged(e)">
+                            <option disabled selected="selected">Select Category</option>
+                            <option value="Audiobook">Audiobook</option>
+                            <option value="Book">Book</option>
+                            <option value="Cd">CD</option>
+                            <option value="Dvd">DVD</option>
+                            <option value="Magazine">Magazine</option>
+                        </select>
+                    <br />
+                        <label for="publisher">Publisher</label>
+                        <input type="text" @bind="addPub" />
+                    <br />
+                        <label for="genre">Genre</label>
+                        <input type="text" @bind="addGenre" />
+                    <br />
+                        <label for="location">Location</label>
+                        <select @onchange="e => OnLocationChanged(e)">
+                            <option disabled selected="selected">Select Location</option>
+                            <option value="North Hill">Audiobook</option>
+                            <option value="City Center">Book</option>
+                            <option value="East Village">CD</option>
+                            <option value="Lakeside">DVD</option>
+                        </select>
+                    <br />
+                        <label for="replacecost">Replacement Cost</label>
+                        <input type="text" @bind="addReplaceCost" />
+                    <br />
+                        <label for="pubdate">Date Published</label>
+                        <input type="text" @bind="addPubDate" />
+                    <br />
+
+                    @if (addAudiobookFields)
+                    {
+                        <label for="isbn">ISBN (Format: 999-99-99999-99-9)</label>
+                        <input type="text" @bind="addIsbn" />
+                        <br />
+                        <label for="author">Author</label>
+                        <input type="text" @bind="addAuthor" />
+                        <br />
+                        <label for="duration">Duration</label>
+                        <input type="text" @bind="addDuration" />
+                        <br />
+                        <label for="narrator">Narrator</label>
+                        <input type="text" @bind="addNarrator" />
+                        <br />
+                    }
+                    @if (addBookFields)
+                    {
+                            <label for="isbn">ISBN (Format: 999-99-99999-99-9)</label>
+                            <input type="text" @bind="addIsbn" />
+                        <br />
+                            <label for="author">Author</label>
+                            <input type="text" @bind="addAuthor" />
+                        <br />
+                            <label for="format">Format</label>
+                            <select @onchange="e => OnFormatChanged(e)">
+                                <option value="softcover">Softcover</option>
+                                <option value="hardcover">Hardcover</option>
+                                <option value="ebook">EBook</option>
+                            </select> 
+                        <br />
+                    }
+                    @if (addCdFields)
+                    {
+                            <label for="artist">Artist</label>
+                            <input type="text" @bind="addArtist" />
+                        <br />
+                            <label for="label">Label</label>
+                            <input type="text" @bind="addLabel" />
+                        <br />
+                            <label for="duration">Duration</label>
+                            <input type="text" @bind="addDuration" />
+                        <br />
+                    }
+                    @if (addDvdFields)
+                    {
+                            <label for="directior">Director</label>
+                            <input type="text" @bind="addDirector" />
+                        <br />
+                            <label for="duration">Duration</label>
+                            <input type="text" @bind="addDuration" />
+                        <br />
+                            <label for="format">Format</label>
+                            <select @onchange="e => OnFormatChanged(e)">
+                                <option value="dvd">DVD</option>
+                                <option value="blu-ray">Blu-Ray</option>
+                            </select>
+                        <br />
+                    }
+                    @if (addMagazineFields)
+                    {
+                            <label for="publication">Publication</label>
+                            <input type="text" @bind="addPublication" />
+                        <br />
+                            <label for="issn">ISSN (Format: 9999-9999)</label>
+                            <input type="text" @bind="addLabel" />
+                        <br />
+                            <label for="coverdate">Cover Date</label>
+                            <input type="date" @bind="addCoverDate"/>
+                        <br />
+                    }
+                    <button class="close" @onclick="ClosePopUp">&times;</button>
+                    <button class="add" @onclick="AddItem">Add Item</button>
+                    <p></p>
+                </div>
+            </div>
+        }
+
+    </div>
+</section>
+
+<style>
+    .popup {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .popup-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+        width: 300px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        cursor: pointer;
+        font-size: 20px;
+    }
+</style>
 @code {
-    
+
+    // search criteria selectors
+    private bool sTitle = false;
+    private bool sCategory = false;
+    private bool sLocation = false;
+    private bool sStatus = false;
+    private string searchField = "";
+
+    // displayed item info fields
+    private int itemId = 0;
+    private string title = "";
+    private string category = "";
+    private string publisher = "";
+    private string genre = "";
+    private string location = "";
+    private string status = "";
+    private float replaceCost = 0;
+    private DateTime pubDate = null;
+
+    // displayed item child info fields
+    private string isbn = "";
+    private string author = "";
+    private string auration = "";
+    private string narrator = "";
+    private string format = "";
+    private string artist = "";
+    private string label = "";
+    private string director = "";
+    private string publication = "";
+    private string issn = "";
+    private string duration = "";
+    private DateTime? coverDate = null;
+
+    // displayed child field bools
+    private bool audiobookFields = false;
+    private bool bookFields = false;
+    private bool cdFields = false;
+    private bool dvdFields = false;
+    private bool magazineFields = false;
+
+    // add item fields
+    private string addTitle = "";
+    private string addCategory = "";
+    private string addPub = "";
+    private string addGenre = "";
+    private string addLocation = "";
+    private float addReplaceCost = 0;
+    private DateTime? addPubDate = null;
+
+    // add item child fields
+    private string addIsbn = "";
+    private string addAuthor = "";
+    private string addDuration = "";
+    private string addNarrator = "";
+    private string addFormat = "";
+    private string addArtist = "";
+    private string addLabel = "";
+    private string addDirector = "";
+    private string addPublication = "";
+    private string addIssn = "";
+    private DateTime? addCoverDate = null;
+
+    // category dropdown in add item
+    private bool isAddItemVisible = false;
+    private bool addAudiobookFields = false;
+    private bool addBookFields = false;
+    private bool addCdFields = false;
+    private bool addDvdFields = false;
+    private bool addMagazineFields = false;
+
+    // List of found items
+    private List<Item> foundList = new List<Item>();
+
+    private void PopulateItemFields(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value.ToString(), out int selectedItemId))
+        {
+            Item selectedItem = foundList.FirstOrDefault(i => i.ItemId == selectedItemId);
+            if (selectedItem != null)
+            {
+                itemId = selectedItem.ItemId;
+                category = selectedItem.Category;
+                publisher = selectedItem.Publisher;
+                genre = selectedItem.Genre;
+                location = selectedItem.Location;
+                status = selectedItem.Status;
+                replaceCost = selectedItem.ReplaceCost;
+                pubDate = selectedItem.PubDate;
+
+                if (selectedItem is Audiobook ab)
+                {
+                    isbn = ab.Isbn;
+                    author = ab.Author;
+                    addDuration = ab.Duration;
+                    narrator = ab.Narrator;
+
+                    audiobookFields = true;
+                }
+                if (selectedItem is Book b)
+                {
+                    isbn = b.Isbn;
+                    author = b.Author;
+                    format = b.Format;
+
+                    bookFields = true;
+                }
+                if (selectedItem is Cd cd)
+                {
+                    artist = cd.Artist;
+                    label = cd.Label;
+                    duration = cd.Duration;
+
+                    cdFields = true;
+                }
+                if (selectedItem is Dvd dvd)
+                {
+                    director = dvd.Director;
+                    duration = dvd.Duration;
+                    format = dvd.Format;
+
+                    dvdFields = true;
+                }
+                if (selectedItem is Magazine m)
+                {
+                    publication = m.Publication;
+                    issn = m.Issn;
+                    coverDate = m.CoverDate;
+
+                    magazineFields = true;
+                }         
+                StateHasChanged();
+            }
+        }
+    }
+
+    private void SearchItems()
+    {
+        // Logic to search items based on criteria
+    }
+
+
+    private void AddNewItemInfo()
+    {
+        // Logic to add new item
+    }
+
+    private void EditItemInfo()
+    {
+        if (itemId > 0)
+        {
+            DBHandler db = new DBHandler();
+            if (category == "Audiobook")
+            {
+                Audiobook ab = new Audiobook(
+                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                        isbn, author, duration, narrator);               
+                AudiobookManager abm = new AudiobookManager(db);
+                abm.UpdateItem(ab);
+            }
+            if (category == "Book")
+            {
+                Book b = new Book(
+                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                        isbn, author, format);
+                BookManager bm = new BookManager(db);
+                bm.UpdateItem(b);
+            }
+            if (category == "Cd")
+            {
+                Cd cd = new Cd(
+                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                        artist, label, duration);
+                CdManager cdm = new CdManager(db);
+                cdm.UpdateItem(cd);
+            }
+            if (category == "Dvd")
+            {
+                Dvd dvd = new Dvd(
+                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                        director, duration, format);
+                DvdManager dvdm = new DvdManager(db);
+                dvdm.UpdateItem(dvd);
+            }
+            if (category == "Magazine")
+            {
+                Magazine m = new Magazine(
+                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                        publication, issn, coverDate);
+                MagazineManager mm = new MagazineManager(db);
+                mm.UpdateItem(m);
+            }
+        }
+    }
+
+    private void ClearFields()
+    {
+        itemId = 0;
+        title = "";
+        category = "";
+        publisher = "";
+        genre = "";
+        location = "";
+        status = "";
+        replaceCost = 0;
+        pubDate = null;
+
+        isbn = "";
+        author = "";
+        duration = "";
+        narrator = "";
+        format = "";
+        artist = "";
+        label = "";
+        director = "";
+        publication = "";
+        issn = "";
+        duration = "";
+        coverDate = null;
+
+        StateHasChanged();
+    }
+
+    private void AddItem()
+    {
+        // Logic to add item to rental
+    }
+
+    private void DeleteItem()
+    {
+
+    }
+
+    private void ShowAddItemPopUp()
+    {
+        isAddItemVisible = true; 
+    }
+
+    private void ClosePopUp()
+    {
+        ClearFields();
+        isAddItemVisible = false; 
+    }
+
+    private void OnCategoryChanged(ChangeEventArgs e)
+    {
+        addCategory = e.Value?.ToString(); // Updates the `category` field
+        ChangeAddItemCategory();       // Calls your custom method
+    }
+
+    private void ChangeAddItemCategory()
+    {
+        addAudiobookFields = false;
+        addBookFields = false;
+        addCdFields = false;
+        addDvdFields = false;
+        addMagazineFields = false;
+        switch(category)
+        {
+            case "Audiobook":
+                addAudiobookFields = true;
+                break;
+            case "Book":
+                addBookFields = true;
+                break;
+            case "Cd":
+                addCdFields = true;
+                break;
+            case "Dvd":
+                addDvdFields = true;
+                break;
+            case "Magazine":
+                addMagazineFields = true;
+                break;
+        }
+    }
+    private void OnLocationChanged(ChangeEventArgs e)
+    {
+        addLocation = e.Value?.ToString(); // Updates the `category` field
+    }
+    private void OnFormatChanged(ChangeEventArgs e)
+    {
+        addFormat = e.Value?.ToString(); // Updates the `category` field
+    }
+
 }
+

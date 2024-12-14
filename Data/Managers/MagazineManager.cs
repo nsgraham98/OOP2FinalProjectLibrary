@@ -102,5 +102,17 @@ namespace OOP2FinalProjectLibrary.Data.Managers
 		{
 			return _dbHan.LoadTypedItemsFromDB().OfType<Magazine>().FirstOrDefault(m => m.ItemId == itemId);
 		}
-	}
+        public List<Magazine> SearchItem(string searchField, bool isTitle, bool isCategory, bool isStatus, bool isLocation)
+        {
+
+            var allMags = LoadAllItems();
+            var filteredMags = allMags.Where(magazines =>
+                (isTitle && magazines.Title.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isCategory && magazines.Category.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isStatus && magazines.Status.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isLocation && magazines.Location.Contains(searchField, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
+            return filteredMags;
+        }
+    }
 }

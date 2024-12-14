@@ -97,5 +97,17 @@ namespace OOP2FinalProjectLibrary.Data.Managers
 		{
 			return _dbHan.LoadTypedItemsFromDB().OfType<Cd>().FirstOrDefault(cd => cd.ItemId == itemId);
 		}
-	}
+
+        public List<Cd> SearchItem(string searchField, bool isTitle, bool isCategory, bool isStatus, bool isLocation)
+        {
+            var allCds = LoadAllItems();
+            var filteredCds = allCds.Where(cd =>
+                (isTitle && cd.Title.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isCategory && cd.Category.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isStatus && cd.Status.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+                (isLocation && cd.Location.Contains(searchField, StringComparison.OrdinalIgnoreCase))
+                ).ToList();
+            return filteredCds;
+        }
+    }
 }

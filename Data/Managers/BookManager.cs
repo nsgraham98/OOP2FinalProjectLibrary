@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace OOP2FinalProjectLibrary.Data.Managers
 {
-    public class BookManager : IItemManager<Book>
-    {
+	public class BookManager : IItemManager<Book>
+	{
 		public static List<Book> books;
 
-        private readonly DBHandler _dbHan;
+		private readonly DBHandler _dbHan;
 
 		public BookManager(DBHandler dbHan)
 		{
@@ -99,6 +99,18 @@ namespace OOP2FinalProjectLibrary.Data.Managers
 		public Book LoadItemById(int itemId)
 		{
 			return _dbHan.LoadTypedItemsFromDB().OfType<Book>().FirstOrDefault(b => b.ItemId == itemId);
+		}
+		public List<Book> SearchItem(string searchField, bool isTitle, bool isCategory, bool isStatus, bool isLocation)
+		{
+			Book b = new Book();
+			var allBooks = LoadAllItems();
+			var filteredBooks = allBooks.Where(Dvd =>
+				(isTitle && b.Title.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+				(isCategory && b.Category.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+				(isStatus && b.Status.Contains(searchField, StringComparison.OrdinalIgnoreCase)) ||
+				(isLocation && b.Location.Contains(searchField, StringComparison.OrdinalIgnoreCase))
+				).ToList();
+			return filteredBooks;
 		}
 	}
 }
