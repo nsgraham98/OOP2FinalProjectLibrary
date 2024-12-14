@@ -32,6 +32,7 @@ namespace OOP2FinalProjectLibrary.Data
 
         // function gets run on app startup (in App.xaml.cs)
         /* checks if local copy of DB exists
+         *  - if db exists it establishes connection
          *  - if not it creates it in users AppData directory
          *  - template DB is located in Resources/Raw/library_rental.db */
         public static void InitializeDatabase()
@@ -417,15 +418,17 @@ namespace OOP2FinalProjectLibrary.Data
             }
         }
 
+
+        // insert child functions still need a delete Item in catch block
         public string InsertBookDB(
             string title, string category, string publisher, string genre, 
             string location, string  status, float replaceCost, DateTime pubDate,
                 string isbn, string author, string format)
         {
-            try
+            Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+            if (item != null)
             {
-                Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
-                if (item != null)
+                try
                 {
                     using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
@@ -445,22 +448,23 @@ namespace OOP2FinalProjectLibrary.Data
                     }
                     return "Book Successfully Added";
                 }
-                else { return "Error. Item was not Added"; }    
-            }      
-            catch (Exception ex)
-            {
-                return ex.Message;
+                catch (Exception ex)
+                {
+                    DeleteItemDB(item);
+                    return ex.Message;
+                }                   
             }
+            else { return "Error. Item was not Added"; } 
         }
         public string InsertCdDB(
             string title, string category, string publisher, string genre,
             string location, string status, float replaceCost, DateTime pubDate,
                 string artist, string label, string duration)
         {
-            try
+            Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+            if (item != null)
             {
-                Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
-                if (item != null)
+                try
                 {
                     using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
@@ -480,22 +484,23 @@ namespace OOP2FinalProjectLibrary.Data
                     }
                     return "CD Successfully Added";
                 }
-                else { return "Error. Item was not Added"; }              
-            }           
-            catch (Exception ex)
-            {
-                return ex.Message;
+                catch (Exception ex)
+                {
+                    DeleteItemDB(item);
+                    return ex.Message;
+                }
             }
+            else { return "Error. Item was not Added"; }
         }
         public string InsertDvdDB(
             string title, string category, string publisher, string genre,
             string location, string status, float replaceCost, DateTime pubDate,
                 string director, string duration, string format)
         {
-            try
+            Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+            if (item != null)
             {
-                Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
-                if (item != null)
+                try
                 {
                     using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
@@ -515,22 +520,23 @@ namespace OOP2FinalProjectLibrary.Data
                     }
                     return "DVD Successfully Added";
                 }
-                else { return "Error. Item was not added"; }             
-            }          
-            catch (Exception ex)
-            {
-                return ex.Message;
+                catch (Exception ex)
+                {
+                    DeleteItemDB(item);
+                    return ex.Message;
+                }
             }
+            else { return "Error. Item was not Added"; }
         }
         public string InsertMagazineDB(
             string title, string category, string publisher, string genre,
             string location, string status, float replaceCost, DateTime pubDate,
                 string publication, string issn, DateTime coverDate)
         {
-            try
+            Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+            if (item != null)
             {
-                Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
-                if (item != null)
+                try
                 {
                     using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
@@ -550,22 +556,23 @@ namespace OOP2FinalProjectLibrary.Data
                     }
                     return "Magazine Successfully Added";
                 }
-                else { return "Error. Item was not added"; }
+                catch (Exception ex)
+                {
+                    DeleteItemDB(item);
+                    return ex.Message;
+                }
             }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
+            else { return "Error. Item was not Added"; }
         }
         public string InsertAudiobookDB(
             string title, string category, string publisher, string genre,
             string location, string status, float replaceCost, DateTime pubDate,
                 string isbn, string author, string duration, string narrator)
         {
-            try
+            Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
+            if (item != null)
             {
-                Item? item = InsertItemDB(title, category, publisher, genre, location, status, replaceCost, pubDate);
-                if (item != null)
+                try
                 {
                     using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                     {
@@ -582,16 +589,17 @@ namespace OOP2FinalProjectLibrary.Data
                             cmd.Parameters.AddWithValue("@abNarrator", narrator);
 
                             cmd.ExecuteNonQuery();
-                        }
-                        return "Audiobook Successfully Added";
+                        }                       
                     }
+                    return "Audiobook Successfully Added";
                 }
-                else { return "Error. Item was not Added"; }
+                catch (Exception ex)
+                {
+                    DeleteItemDB(item);
+                    return ex.Message;
+                }
             }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }               
+            else { return "Error. Item was not Added"; }
         }
 
         // used in conjunction with DeleteItemDB child functions to keep DB consistent

@@ -1,0 +1,44 @@
+﻿@page "/membership"
+@using OOP2FinalProjectLibrary
+@using OOP2FinalProjectLibrary.Data
+@using OOP2FinalProjectLibrary.Data.Objects
+@using OOP2FinalProjectLibrary.Data.Objects.Items
+@inject NavigationManager navigationManager
+<h2>Membership</h2>
+
+<h4>Enter Your Information to sign up</h4>
+
+@* <div class="membership">
+    <form>
+        <h3>Update Reservation</h3>
+        <label for="code">Code:</label>
+        <input type="text" name="code" @bind="@reservationCode" readonly/><br />
+
+        <label for="flight">Flight:</label>
+    <input type="text" name="flight" @bind="@flightCode" readonly /><br />
+
+        <label for="airline">Airline:</label>
+    <input type="text" name="airline" @bind="@airlineName" readonly /><br />
+
+        <label for="cost">Cost:</label>
+    <input type="number" name="cost" @bind="@cost" readonly /><br />
+
+        <label for="name">Name:</label>
+        <input type="text" name="name" @bind="@customerName" /><br />
+
+        <label for="citizenship">Citizenship:</label>
+        <input type="text" name="citizenship" @bind="@citizenship"/><br />
+
+        <label for="status">Status:</label>
+    <select name="status" @bind="@status">
+            <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+        </select>
+
+    <button type="button" @onclick="PassModifyReservation">Update</button>
+    <p>@reservationMessage</p>
+    </form>  *@
+
+@code {
+
+}
