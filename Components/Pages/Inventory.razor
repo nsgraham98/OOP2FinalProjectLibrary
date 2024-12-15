@@ -148,7 +148,7 @@
             <input type="date" @bind="coverDate" readonly />
             <br />
         }
-        <button type="submit" @onclick="DeleteItem">Delete Item</button>
+        <button type="submit" @onclick="ShowDeleteBox">Delete Item</button>
         <button type="reset" @onclick="ClearDisplayedFields">Clear</button>
         <button @onclick="ShowEditItemPopUp">Edit Item</button>
         <button @onclick="ShowAddItemPopUp">Add New Item</button>
@@ -399,6 +399,16 @@
             </div>           
         </div>
     }
+    @if (delAlert)
+    {
+        <div class="popup">
+            <div class="popup-content">
+                <p>@delMessage</p>
+                <button @onclick="CancelDelete">Cancel</button>
+                <button @onclick="ConfirmDelete">Delete</button>
+            </div>
+        </div>
+    }
 </section>
 
 <style>
@@ -634,6 +644,10 @@
     private bool alert = false;
     string message = "";
 
+    private bool delAlert = false;
+    private string delMessage = "";
+    private bool delConfirm = false;
+
     // List of found items
     private List<Item> foundList = new List<Item>();
 
@@ -862,49 +876,64 @@
 
     /* ==============================================================================
      * DELETE */
+    private void ShowDeleteBox()
+    {
+        delMessage = "This will permanently delete the item. Would you like to continue?";
+        delAlert = true;
+    }
     private void DeleteItem()
     {
-        DBHandler db = new DBHandler();
-        if (category == "Audiobook")
+
+        if (delConfirm)
         {
-            Audiobook ab = new Audiobook(
-                itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
-                    isbn, author, duration, narrator);
-            AudiobookManager abm = new AudiobookManager(db);
-            message = abm.DeleteItem(ab);
+            DBHandler db = new DBHandler();
+            if (category.ToLower() == "audiobook")
+            {
+                Audiobook ab = new Audiobook(
+                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                        isbn, author, duration, narrator);
+                AudiobookManager abm = new AudiobookManager(db);
+                message = abm.DeleteItem(ab);
+            }
+            if (category.ToLower() == "book")
+            {
+                Book b = new Book(
+                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                        isbn, author, format);
+                BookManager bm = new BookManager(db);
+                message = bm.DeleteItem(b);
+            }
+            if (category.ToLower() == "cd")
+            {
+                Cd cd = new Cd(
+                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                        artist, label, duration);
+                CdManager cdm = new CdManager(db);
+                message = cdm.DeleteItem(cd);
+            }
+            if (category.ToLower() == "dvd")
+            {
+                Dvd dvd = new Dvd(
+                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                        director, duration, format);
+                DvdManager dvdm = new DvdManager(db);
+                message = dvdm.DeleteItem(dvd);
+            }
+            if (category.ToLower() == "magazine")
+            {
+                Magazine m = new Magazine(
+                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
+                        publication, issn, coverDate);
+                MagazineManager mm = new MagazineManager(db);
+                message = mm.DeleteItem(m);
+            }
         }
-        if (category == "Book")
-        {
-            Book b = new Book(
-                itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
-                    isbn, author, format);
-            BookManager bm = new BookManager(db);
-            message = bm.DeleteItem(b);
-        }
-        if (category == "Cd")
-        {
-            Cd cd = new Cd(
-                itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
-                    artist, label, duration);
-            CdManager cdm = new CdManager(db);
-            message = cdm.DeleteItem(cd);
-        }
-        if (category == "Dvd")
-        {
-            Dvd dvd = new Dvd(
-                itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
-                    director, duration, format);
-            DvdManager dvdm = new DvdManager(db);
-            message = dvdm.DeleteItem(dvd);
-        }
-        if (category == "Magazine")
-        {
-            Magazine m = new Magazine(
-                itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
-                    publication, issn, coverDate);
-            MagazineManager mm = new MagazineManager(db);
-            message = mm.DeleteItem(m);
-        }
+
+        delMessage = "";
+        delAlert = false;
+        delConfirm = false;
+
+        StateHasChanged();
     }
 
     /* ==============================================================================
@@ -1024,8 +1053,8 @@
         editStatus = e.Value?.ToString();
     }
 
-/* ==============================================================================
- * ADD */
+    /* ==============================================================================
+     * ADD */
     private void AddItem()
     {
         DBHandler db = new DBHandler();
@@ -1114,8 +1143,8 @@
         ChangeAddItemCategory();
     }
 
-/* ==============================================================================
- * ALERTS */
+    /* ==============================================================================
+     * ALERTS */
     private void ShowAlertBox()
     {
         alert = true;
@@ -1123,6 +1152,24 @@
     private void CloseAlertBox()
     {
         alert = false;
+    }
+
+    private void ShowDelAlertBox()
+    {
+        delAlert = true;
+    }
+    private void CloseDelAlertBox()
+    {
+        delAlert = false;
+    }
+    private void ConfirmDelete()
+    {
+        delConfirm = true;
+        DeleteItem();
+    }
+    private void CancelDelete()
+    {
+        delConfirm = false;
     }
 }
 
