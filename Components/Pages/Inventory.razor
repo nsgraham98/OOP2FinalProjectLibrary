@@ -16,11 +16,13 @@
         <input type="text" placeholder="Search by Title" @bind="titleField">
         <label for="availability">Availability</label><br />
         <select @onchange="e => OnSStatusChanged(e)">
+            <option value="" disabled selected>Select Availability</option>
             <option value="available">Available</option>
             <option value="rented">Rented</option>
         </select>
         <label for="category">Category</label>
         <select @onchange="e => OnSCategoryChanged(e)">
+            <option value="" disabled selected>Select Category</option>
             <option value="Audiobook">Audiobook</option>
             <option value="Book">Book</option>
             <option value="Cd">CD</option>
@@ -29,6 +31,7 @@
         </select>
         <label for="location">Location</label>
         <select @onchange="e => OnSLocationChanged(e)">
+            <option value="" disabled selected>Select Location</option>
             <option value="City Center">City Center</option>
             <option value="Lakeside">Lakeside</option>
             <option value="East Village">East Village</option>
@@ -172,14 +175,13 @@
                     <br />
                     <label for="location">Location</label>
                     <select @onchange="e => OnEditLocationChanged(e)">
-                        <option disabled selected="selected">Select Location</option>
                         <option value="North Hill">North Hill</option>
                         <option value="City Center">City Center</option>
                         <option value="East Village">East Village</option>
                         <option value="Lakeside">Lakeside</option>
                     </select>
+                    <label for="status">Availability</label>
                     <select @onchange="e => OnEditStatusChanged(e)">
-                        <option disabled selected="selected">Select Status</option>
                         <option value="available">Available</option>
                         <option value="rented">Rented</option>
                     </select>
@@ -206,7 +208,7 @@
                         <input type="text" @bind="editNarrator" />
                         <br />
                     }
-                    @if (addBookFields)
+                    @if (editBookFields)
                     {
                         <label for="isbn">ISBN (Format: 999-99-99999-99-9)</label>
                         <input type="text" @bind="editIsbn" />
@@ -892,6 +894,7 @@
             }
             CloseEditItemPopUp();
             alert = true;
+            StateHasChanged();
         }
     }
 
