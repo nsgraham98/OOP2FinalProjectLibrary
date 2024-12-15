@@ -7,7 +7,7 @@
 @inject NavigationManager navManager
 
 <h3 class="heading">Inventory Manager</h3>
-<section class="grid">
+<section class="container">
     <div class="box">
         <h3>Search Inventory</h3>
         <p>Search by:</p>
@@ -402,6 +402,122 @@
 </section>
 
 <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+        color: #444;
+    }
+    h3 {
+        text-align: center;
+    }
+
+    /* Table styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    thead {
+        background-color: #007bff;
+        color: #fff;
+        text-align: left;
+    }
+
+    th, td {
+        padding: 12px;
+        border: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #e9ecef;
+    }
+
+    /* Button styling */
+    button {
+        padding: 10px 15px;
+        font-size: 14px;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+    /* Form styling */
+    form {
+        margin-bottom: 20px;
+    }
+
+    input, select {
+        padding: 10px;
+        font-size: 14px;
+        margin: 0 5px 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: calc(100% - 20px);
+        box-sizing: border-box;
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin: 10px 0 5px;
+    }
+
+    /* Flexbox layout for form sections */
+    .flex-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+        .flex-row > div {
+            flex: 1 1 calc(50% - 10px);
+        }
+
+    /* Utility classes */
+    .text-center {
+        text-align: center;
+    }
+
+    .mt-20 {
+        margin-top: 20px;
+    }
+
+    .mb-20 {
+        margin-bottom: 20px;
+    }
+
     .popup {
         display: flex;
         position: fixed;
@@ -422,49 +538,7 @@
         width: 300px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
-/*     .close {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        cursor: pointer;
-        font-size: 20px;
-    } */
-
-    .alert-box {
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-        z-index: 9999; 
-        width: 300px;
-        text-align: center;
-    }
-
-    .alert-box p {
-        margin: 10px 0;
-        font-size: 16px;
-    }
-
-    .alert-box button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .alert-box button:hover {
-        background-color: #0056b3;
-    }
+    
 </style>
 @code {
 

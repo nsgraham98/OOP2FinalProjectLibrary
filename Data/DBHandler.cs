@@ -113,7 +113,7 @@ namespace OOP2FinalProjectLibrary.Data
                             int memberId = reader.GetInt32(1);
                             DateTime startDate = reader.GetDateTime(2);
                             DateTime dueDate = reader.GetDateTime(3);
-                            DateTime? returnedDate = reader.GetDateTime(4);
+                            DateTime? returnedDate = reader.IsDBNull(4) ? (DateTime?)null : reader.GetDateTime(4);
                             string rentStatus = reader.GetString(5);
 
                             Rental rental = new Rental(rentalId, memberId, startDate, dueDate, returnedDate, rentStatus);
