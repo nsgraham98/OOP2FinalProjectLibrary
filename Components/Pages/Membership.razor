@@ -6,67 +6,144 @@
 @using OOP2FinalProjectLibrary.Data.Objects
 @inject NavigationManager navManager
 
+<section class="container">
+    <h2>Membership</h2>
 
-<h2>Membership</h2>
+    <h4>Enter Your Information</h4>
 
-<h4>Enter Your Information</h4>
+    <div class="membership">
+        <form>
+            <div class="flex-row">
+                <label for="lastName">Last Name:</label>
+                <input type="text" name="lastName" @bind="@lastName" /><br />
 
-<div class="membership">
-    <form>
-        <label for="lastName">Last Name:</label>
-        <input type="text" name="lastName" @bind="@lastName" /><br />
+                <label for="firstName">First Name:</label>
+                <input type="text" name="firstName" @bind="@firstName" /><br />
 
-        <label for="firstName">First Name:</label>
-        <input type="text" name="firstName" @bind="@firstName" /><br />
+                <label for="memberId">Membership ID:</label>
+                <input type="text" name="memberId" @bind="@memberId" /><br />
 
-        <label for="memberId">Membership ID:</label>
-        <input type="text" name="memberId" @bind="@memberId" /><br />
+                <label for="phone">Phone:</label>
+                <input type="text" name="phone" @bind="@phone" /><br />
 
-        <label for="phone">Phone:</label>
-        <input type="text" name="phone" @bind="@phone" /><br />
+                <label for="email">Email:</label>
+                <input type="text" name="email" @bind="@email" /><br />
 
-        <label for="email">Email:</label>
-        <input type="text" name="email" @bind="@email" /><br />
-
-        <label for="address">Address:</label>
-        <input type="text" name="address" @bind="@address" /><br />
+                <label for="address">Address:</label>
+                <input type="text" name="address" @bind="@address" /><br />
 
 
-        <button type="button" @onclick="SubmitForm">Add</button>
-        <button type="button" @onclick="SaveEdits">Save Changes</button>
-        <button type="button" @onclick="DeleteMember">Delete</button>
-        <button type="button" @onclick="ClearFields">Clear</button>
-    </form>
-</div>
-<br />
+                <button type="button" @onclick="SubmitForm">Add</button>
+                <button type="button" @onclick="SaveEdits">Save Changes</button>
+                <button type="button" @onclick="DeleteMember">Delete</button>
+                <button type="button" @onclick="ClearFields">Clear</button>
+            </div>
+        </form>
+    </div>
+    <br />
 
-<div class="membership">
-    <h4>Search for a Membership</h4>
-    <form>
-        <label for="lastName">Last Name:</label>
-        <input type="text" name="lastName" @bind="@searchlastName" /><br />
+    <div class="membership">
+        <h4>Search for a Membership</h4>
+        <form>
+            <label for="lastName">Last Name:</label>
+            <input type="text" name="lastName" @bind="@searchlastName" /><br />
 
-        <label for="firstName">First Name:</label>
-        <input type="text" name="firstName" @bind="@searchfirstName" /><br />
+            <label for="firstName">First Name:</label>
+            <input type="text" name="firstName" @bind="@searchfirstName" /><br />
 
-        <label for="memberId">Membership ID:</label>
-        <input type="text" name="memberId" @bind="@searchmemberId" /><br />
+            <label for="memberId">Membership ID:</label>
+            <input type="text" name="memberId" @bind="@searchmemberId" /><br />
 
-        <button type="button" @onclick="SearchMember">Search</button>
-    </form>
-</div>
+            <button type="button" @onclick="SearchMember">Search</button>
+        </form>
+    </div>
 
-<div class="membership">
-    @foreach (Member resultmem in searchMembers)
-    {
+    <div class="membership">
+        @foreach (Member resultmem in searchMembers)
+        {
 
-        <p class="memberResults">
-            <strong>Name: </strong> @resultmem.FirstName @resultmem.LastName <br />
-            <strong>Membership Number: </strong> @resultmem.MemberId<br />
-        </p>
-        <button type="button" @onclick="() => UpdateFields(resultmem)">Select this member</button>
+            <p class="memberResults">
+                <strong>Name: </strong> @resultmem.FirstName @resultmem.LastName <br />
+                <strong>Membership Number: </strong> @resultmem.MemberId<br />
+            </p>
+            <button type="button" @onclick="() => UpdateFields(resultmem)">Select this member</button>
+        }
+    </div>
+</section>
+<style>
+    /* General page styling */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        color: #333;
     }
-</div>
+
+    .container {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Headings */
+    h2 {
+        color: #444;
+        text-align: center;
+    }
+
+    h4 {
+        color: #555;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    /* Form styling */
+    form {
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin: 10px 0 5px;
+    }
+
+    input {
+        width: calc(100% - 20px);
+        padding: 8px;
+        font-size: 14px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    button {
+        padding: 8px 12px;
+        font-size: 14px;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-right: 10px;
+    }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+</style>
 
 @code {
     string lastName;

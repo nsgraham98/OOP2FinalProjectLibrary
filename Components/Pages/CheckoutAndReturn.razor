@@ -4,177 +4,421 @@
 @using OOP2FinalProjectLibrary.Data.Objects
 @using OOP2FinalProjectLibrary.Data.Objects.Items
 @inject NavigationManager navigationManager
+@using OOP2FinalProjectLibrary.Data.Managers
 
 
-<style>
-    .maincontent
-    {
-        margin:0;
-        display: flex;
-        flex-wrap:wrap;
-    }
-    .maincontent > div
-    {
-        flex-grow:1;
-    }
-    .maincontent > div:nth-child(3)
-    {
-/*         background-color:lightblue; */
-        width:100%;
-
-    }
-    .maincontent > div:nth-child(2)
-    {
-        text-align:right;
-        position:relative;
-        margin-right:0;
-/*         background-color:lightcoral; */
-    }
-    .maincontent > div:nth-child(1)
-    {
-/*         background-color:lightyellow; */
-    }
-    .maincontent div:nth-child(2) > input
-    {
-        margin-right:0;
-        margin:auto;
-    }
-   
-    h3
-    {
-        text-align:center;
-    }
-
-    .reserve
-    {
-        display: flex;
-        flex-direction: row;
-        justify-content:flex-start;
-        align-items: flex-start;
-    }
-    .reserve > form > button
-    {
-        display:block;
-        margin:auto;
-        margin-left:53%;
-        margin-top:1em;
-        background-color:royalblue;
-        color:white;
-        border-radius:5px;
-    }
-    .reserve > form > input
-    {
-        border-radius:5px;
-        width:300px;
-    }
-    .selectionbutton
-    {
-        margin-bottom:20px;
-    }
-
-    .selectionstring 
-    {
-        border-top: solid black 2px;
-        padding-top:18px;
-    }
-
-
-</style>
-<div class="maincontent">
+<section class="maincontent">
+    <div>
         <div class="title">
-            <h3>Checkout & Returns</h3><br/>
-            <p>Searchby Title Check-out <br />Enter Serial Number to Return</p>
+            <h3>Checkout & Returns</h3><br />
+            <h4>Welcome @displayName</h4> <br /> <br />
         </div>
 
         <div class="bookForm">
             <form>
-            <h3>Search by Category</h3>
+                <h3>Search Item</h3>
 
-            <label for="title">Title:</label>
-            <input type="text" name="title" @bind="@title" /><br />
+                <label for="title">Title:</label>
+                <input type="text" name="title" @bind="@title" /><br />
 
-            <button type="button">Search</button><br />
+                <label for="category">Category:</label>
+                <input type="text" name="category" @bind="@category" /><br />
 
-        </form>
+                <button type="button" @onclick="SearchItems">Search</button><br />
+            </form>
 
-        @foreach (Item item in ItemList)
-        {
-            @if(item.Status == "available") // change to match the strings used for availability
+            @foreach (Item item in searchItems)
             {
-                <div class="itemData" style="background-color:@(IsChecked ? "green" :"yellow")">
-                    <p>
-                        <strong>Title:</strong> @item.Title <br />
-                        @if (item is Book book)
-                        {
-                            <h4>Book</h4> <br />
-                            <strong>Author:</strong> @book.Author <br />
-                        }    
-                    
-                        @if(item is Cd cd)
-                        {
-                            <h4>CD</h4> <br />
-                            <strong>Artist:</strong> @cd.Artist <br />
-                        }
+                @if (item.Status == "available") // change to match the strings used for availability
 
-                        @if(item is Magazine magazine)
-                        {
-                            <h4>Magazine</h4> <br />
-                            <strong>Publication:</strong> @magazine.Publication <br />
-                            <strong>Cover Date:</strong> @magazine.CoverDate<br />
-                        }
+                {
+                    <div class="itemData" style="background-color:@(IsChecked ? "green" : "white")">
+                        <p>
+                            <strong>Title:</strong> @item.Title <br />
+                            @if (item is Book book)
+                            {
+                                <h4>Book</h4> <br />
+                                <strong>Author:</strong> @book.Author <br />
+                            }
 
-                        @if(item is Dvd dvd)
-                        {
-                            <h4>DVD</h4> <br />
-                            <strong>Format:</strong> @dvd.Format <br />
-                            <strong>Duration:</strong> @dvd.Duration <br />
-                        }
+                            @if (item is Cd cd)
+                            {
+                                <h4>CD</h4> <br />
+                                <strong>Artist:</strong> @cd.Artist <br />
+                            }
 
-                        @if (item is Audiobook audiobook)
-                        {
-                            <h4>AudioBook</h4>
-                            <strong>Narrator:</strong> @audiobook.Narrator<br />
-                            <strong>Duration:</strong> @audiobook.Duration<br />
-                        }
+                            @if (item is Magazine magazine)
+                            {
+                                <h4>Magazine</h4> <br />
+                                <strong>Publication:</strong> @magazine.Publication <br />
+                                <strong>Cover Date:</strong> @magazine.CoverDate
 
-                        <strong>Genre:</strong> @item.Genre <br />
-                        <strong>Location:</strong> @item.Location <br />
-                        <strong>Status:</strong> @item.Status <br />
+                                <br />
+                            }
 
-                        @* <input type="checkbox" @bind="item.IsChecked" /> *@
-                    </p>
+                            @if (item is Dvd dvd)
+                            {
+                                <h4>DVD</h4> <br />
+                                <strong>Format:</strong> @dvd.Format <br />
+                                <strong>Duration:</strong> @dvd.Duration <br />
+                            }
+
+                            @if (item is Audiobook audiobook)
+                            {
+                                <h4>AudioBook</h4>
+                                <strong>Narrator:</strong> @audiobook.Narrator
+
+                                <br />
+                                <strong>Duration:</strong> @audiobook.Duration
+
+                                <br />
+                            }
+
+                            <strong>Genre:</strong> @item.Genre <br />
+                            <strong>Location:</strong> @item.Location <br />
+                            <strong>Status:</strong> @item.Status <br />
+
+                            @* <input type="checkbox" @bind="item.IsChecked" /> *@
+                            @* <input type="checkbox" @onclick="() => setMember(resultmem)"/> *@
+                            <button type="button" @onclick="() => CreateRental(resultmem, item) ">Create Rental</button>
+
+                        </p>
+                    </div>
+                }
             }
-            </div>
-        }
-        }
-        
-    </div>
-        
-</div>
 
+        </div>
+
+    </div>
+
+
+    <div class="membership">
+        <h4>Search for a Membership</h4>
+        <form>
+            <label for="lastName">Last Name:</label>
+            <input type="text" name="lastName" @bind="@searchlastName" /><br />
+
+            <label for="firstName">First Name:</label>
+            <input type="text" name="firstName" @bind="@searchfirstName" /><br />
+
+            <label for="memberId">Membership ID:</label>
+            <input type="text" name="memberId" @bind="@searchmemberId" /><br />
+
+            <button type="button" @onclick="SearchMember">Search</button>
+        </form>
+    </div>
+
+    <div class="checkout">
+        @foreach (Member resultmem in searchMembers)
+
+        {
+            <p class="memberResults">
+                <strong>Name: </strong> @resultmem.FirstName @resultmem.LastName <br />
+                <strong>Membership Number: </strong> @resultmem.MemberId<br />
+            </p>
+            <button type="button" @onclick="() => setMember(resultmem)">Select this member</button>
+        }
+    </div>
+
+    <div class="rentalsList">
+        @foreach (Rental item in MemberRentals)
+
+        {
+            @UpdateRentalName
+            <strong>Membership ID:</strong> @item.MemberId
+
+            <br />
+            <strong>Title:</strong> @item.Title <br />
+            <strong>Category: </strong> @item.Category
+
+            <br />
+            <strong>Genre:</strong> @item.Genre <br />
+            <strong>Location:</strong> @item.Location <br />
+            <strong>Status:</strong> @item.Status <br />
+        }
+    </div>
+</section>
+<style>
+    .maincontent {
+        margin: 20px auto;
+        max-width: 900px;
+        padding: 15px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .maincontent .title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .maincontent .title h3 {
+
+                font-size: 24px;
+            }
+
+            .maincontent .title h4 {
+
+                font-size: 18px;
+            }
+
+    .bookForm, .membership {
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+        .bookForm h3, .membership h4 {
+            margin-bottom: 15px;
+            font-size: 20px;
+
+        }
+
+        .bookForm input, .membership input {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .bookForm button, .membership button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .bookForm button:hover, .membership button:hover {
+                background-color: #0056b3;
+            }
+
+    .itemData {
+        margin: 15px 0;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+    }
+
+        .itemData p {
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .itemData h4 {
+            margin: 10px 0 5px;
+            font-size: 18px;
+            color: #444;
+        }
+
+    .memberResults {
+        padding: 15px;
+        margin: 15px 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #e9ecef;
+    }
+
+        .memberResults strong {
+            font-weight: bold;
+        }
+
+    .rentalsList {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+        .rentalsList strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #444;
+        }
+
+    }</style>
 
 
 @code {
 
     // private string reservationMessage { get; set; } = "";
     public string title { get; set; }
+    public string category;
     private bool _isChecked;
     public bool IsChecked;
 
-    public List<Item> ItemList { get; set; } = new List<Item>();
+    public string disRentalName = "";
+    //public List<Item> ItemList { get; set; } = new List<Item>();
+
+    List<Item> SelectedItems = new List<Item>();
+
+    Member resultmem;
+
+    List<Item> searchItems = new List<Item>();
+    static DBHandler dbHandler = new DBHandler();
+
+    static ItemManager itemManager = new ItemManager(dbHandler);
+
+    List<Item> ItemList = itemManager.LoadAllItems();
+
+    string searchlastName;
+    string searchfirstName;
+    int searchmemberId;
+
+    string displayName = "";
+    int memberRentId;
+
+    List<Member> searchMembers = new List<Member>();
+    static DBHandler dbHan = new DBHandler();
+
+    // Member tempMem = new Member();
+
+    static MemberManager memMan = new MemberManager(dbHan);
+    public List<Member> Currentmembers = memMan.LoadAllMembers();
 
     public Item item = new Item();
+    // public List<Rental> rentals = new List<Rental>();
+    static RentalManager rentalManager = new RentalManager(dbHan);
+    public List<Rental> rentals = rentalManager.LoadAllRentals();
+
+    public List<Rental> MemberRentals = new List<Rental>();
 
     private void SearchItems()
     {
-        // search for item via title
-        ItemList = ItemList.Where(item => item.Title.Contains(title, StringComparison.OrdinalIgnoreCase)).ToList();
+        //clear previous search results
+        searchItems.Clear();
+
+        foreach (var item in ItemList)
+        {
+            bool match = false;
+
+            if (!string.IsNullOrEmpty(title) && item.Title.Contains(title, StringComparison.OrdinalIgnoreCase))
+            {
+                match = true;
+            }
+
+            if (!string.IsNullOrEmpty(category) && item.Category == category)
+            {
+                match = true;
+            }
+
+            if (match)
+            {
+                searchItems.Add(item);
+            }
+        }
     }
+
 
     private bool CanSearch()
     {
         return ItemList.Any(item => item.Status == "available"); // Only search if item is available
     }
+
+    // add line that either changes the button to unclickable quanitity ==0 or just skip populating altogether
+
+    //search list for memeber
+    public void SearchMember()
+    {
+        //Clear list
+        searchMembers.Clear();
+
+        //Iterate through the Currentmembers list
+        foreach (var mem in Currentmembers)
+        {
+            bool match = false; //set to false
+
+            // Check if any of the search parameters match ignoring casesens
+            if (string.Equals(searchfirstName, mem.FirstName, StringComparison.OrdinalIgnoreCase))
+            // if (searchfirstName != null && mem.FirstName.Contains(searchfirstName, StringComparison.OrdinalIgnoreCase))
+            {
+                match = true;
+            }
+
+            if (string.Equals(searchlastName, mem.LastName, StringComparison.OrdinalIgnoreCase))
+            // if (searchlastName != null && mem.LastName.Contains(searchlastName, StringComparison.OrdinalIgnoreCase))
+            {
+                match = true;
+            }
+
+            if (searchmemberId != 0 && mem.MemberId == searchmemberId)
+            {
+                match = true;
+            }
+
+            // If a match is found add to list (any match will set match to true)
+            if (match)
+            {
+                searchMembers.Add(mem);
+            }
+        }
+    }
+
+    public void setMember(Member mem)
+    {
+        displayName = mem.FirstName;
+        memberRentId = mem.MemberId;
+        showMemberRentals(mem);
+    }
+
+    public void showMemberRentals(Member mem)
+    {
+        rentals.Clear();
+        RentalManager rentalManager = new RentalManager(dbHan);
+        // rentals = rentalManager.LoadRentalsById(mem.MemberId);
+        rentals = rentalManager.LoadAllRentals();
+
+        foreach(Rental temptRent in rentals)
+        {
+            if(mem.MemberId == temptRent.MemberId)
+            {
+                MemberRentals.Add(temptRent);
+            }
+        }
+    }
+
+    public void ReturnItem(Rental rent)
+    {
+        RentalManager rentalManager = new RentalManager(dbHan);
+        rentalManager.DeleteRental(rent);
+
+    }
+
+    public void CreateRental(Member mem, Item item)
+    {
+        // string rentStatus = "Active";
+        // RentalManager rentalManager = new RentalManager(dbHan);
+        if (item.Status == "available")
+        {
+            string rentStatus = "Active";
+            RentalManager rentalManager = new RentalManager(dbHan);
+            rentalManager.AddRental(rentStatus, item);
+
+            //item.Status = "Rented";
+            rentals.Clear();
+            rentals = rentalManager.LoadAllRentals();
+        }
+
+        // rentalManager.AddRental(rentStatus);
+
+    }
+
+    public void UpdateRentalName()
+    {
+        
+    }
+
 
     // add line that either changes the button to unclickable quanitity ==0 or just skip populating altogether
 }

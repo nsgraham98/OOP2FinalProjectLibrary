@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SQLite;
+using OOP2FinalProjectLibrary.Data.Objects.Items;
 
 namespace OOP2FinalProjectLibrary.Data.Objects
 {
-    public class Rental
+    public class Rental : Item
     {
         int rentalId;
         int memberId;
