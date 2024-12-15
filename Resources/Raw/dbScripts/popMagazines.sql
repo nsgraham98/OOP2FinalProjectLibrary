@@ -51,3 +51,5 @@ VALUES
 (5048, 'December 2024 Edition - Part 4', 'National Geographic', 'ISSN 8901-6789', '2024-12-04'),
 (5049, 'January 2024 Edition - Part 5', 'Time', 'ISSN 9012-7890', '2024-01-05'),
 (5050, 'February 2024 Edition - Part 5', 'Macleans', 'ISSN 0123-8901', '2024-02-05');
+
+UPDATE magazine SET issn = REPLACE(issn, 'ISSN ', '');

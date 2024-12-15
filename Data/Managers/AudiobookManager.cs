@@ -25,7 +25,7 @@ namespace OOP2FinalProjectLibrary.Data.Managers
 
 			if (additionalParam.Length < 4)
 			{
-				return "Error: Missing additional parameters for CD.";
+				return "Error: Missing additional parameters for Audiobook.";
 			}
 
 			string isbn = additionalParam[0] as string;

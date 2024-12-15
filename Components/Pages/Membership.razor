@@ -4,11 +4,12 @@
 @using OOP2FinalProjectLibrary.Data.Managers
 @using OOP2FinalProjectLibrary.Data.Objects.Items
 @using OOP2FinalProjectLibrary.Data.Objects
+@inject NavigationManager navManager
 
 
 <h2>Membership</h2>
 
-<h4>Enter Your Information to sign up</h4>
+<h4>Enter Your Information</h4>
 
 <div class="membership">
     <form>
@@ -31,7 +32,10 @@
         <input type="text" name="address" @bind="@address" /><br />
 
 
-        <button type="button" @onclick="SubmitForm">Submit</button>
+        <button type="button" @onclick="SubmitForm">Add</button>
+        <button type="button" @onclick="SaveEdits">Save Changes</button>
+        <button type="button" @onclick="DeleteMember">Delete</button>
+        <button type="button" @onclick="ClearFields">Clear</button>
     </form>
 </div>
 <br />
@@ -57,7 +61,7 @@
     {
 
         <p class="memberResults">
-            <strong>Name: </strong> $"{@resultmem.FirstName} {@resultmem.LastName}"<br />
+            <strong>Name: </strong> @resultmem.FirstName @resultmem.LastName <br />
             <strong>Membership Number: </strong> @resultmem.MemberId<br />
         </p>
         <button type="button" @onclick="() => UpdateFields(resultmem)">Select this member</button>
@@ -76,48 +80,103 @@
     string searchfirstName;
     int searchmemberId;
 
+    bool alert = false;
+    string incompleteFormMsg = "Please fill in all fields";
     // List<Member> Currentmembers = new List<Member>();
 
-    List<Member> Currentmembers = new List<Member>();
     List<Member> searchMembers = new List<Member>();
-    // DBHandler DBHandler = new DBHandler();
+    static DBHandler dbHan = new DBHandler();
+
+    // Member tempMem = new Member();
+
+    static MemberManager memMan = new MemberManager(dbHan);
+
+    List<Member> Currentmembers = memMan.LoadAllMembers();
 
     private void SubmitForm()
     {
+
         // check all fields are filled
         if (string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(firstName) || memberId <= 0 || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(address))
         {
-            ShowAlertForIncompleteFields();
+            // ShowAlertForIncompleteFields();
+            // await DisplayAlert("Error", "Please fill in all fields", "OK");
             return;
         }
 
-        // Create new Member object
-        var newMember = new Member()
+        var newMember = new Member(memberId, lastName, firstName, phone, email, address)
+
             {
-                LastName = lastName,
-                FirstName = firstName,
+
                 MemberId = memberId,
+
+                LastName = lastName,
+
+                FirstName = firstName,
+
                 Phone = phone,
+
                 Email = email,
-                Address = address
+
+                Address = address,
+
             };
 
         // Add the new member object to list
         Currentmembers.Add(newMember);
+
+        //add to the database
+        memMan.AddMember(lastName, firstName, phone, email, address);
     }
 
-    private async void ShowAlertForIncompleteFields(object sender, EventArgs e)
+    public void SaveEdits()
     {
-        await DisplayAlert("Error", "Please fill in all fields", "OK");
+        var mem = new Member(memberId, lastName, firstName, phone, email, address)
+            {
+                MemberId = memberId,
+
+                LastName = lastName,
+
+                FirstName = firstName,
+
+                Phone = phone,
+
+                Email = email,
+
+                Address = address,
+
+            };
+
+        memMan.UpdateMember(mem);
+    }
+
+    public void DeleteMember()
+    {
+        var mem = new Member(memberId, lastName, firstName, phone, email, address)
+            {
+                MemberId = memberId,
+
+                LastName = lastName,
+
+                FirstName = firstName,
+
+                Phone = phone,
+
+                Email = email,
+
+                Address = address,
+            };
+
+        memMan.DeleteMember(mem);
     }
 
     //search list for memeber
     public void SearchMember()
     {
-        // Clear list
+        //Clear list
         searchMembers.Clear();
 
-        // Iterate through the Currentmembers list
+        //Iterate through the Currentmembers list
         foreach (var mem in Currentmembers)
         {
             bool match = false; //set to false
@@ -146,7 +205,20 @@
         }
     }
 
-    private void UpdateFields(Member mem)// changes fields to match selected member
+    private void ClearFields()
+    {
+        lastName = "";
+        firstName = "";
+        memberId = 0;
+        phone = "";
+        email = "";
+        address = "";
+
+        //clear search
+        searchMembers.Clear();
+    }
+
+    public void UpdateFields(Member mem)// changes fields to match selected member
     {
         lastName = mem.LastName;
         firstName = mem.FirstName;

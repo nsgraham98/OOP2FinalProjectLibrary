@@ -9,6 +9,7 @@ using System.IO;
 using System.Xml.Linq;
 using OOP2FinalProjectLibrary.Data.Objects;
 using OOP2FinalProjectLibrary.Data.Objects.Items;
+using Microsoft.Maui.ApplicationModel;
 
 namespace OOP2FinalProjectLibrary.Data
 {
@@ -51,6 +52,7 @@ namespace OOP2FinalProjectLibrary.Data
         {
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
+                connection.Open();
                 string selectQuery = $"SELECT MAX({idColumnName}) AS MaxId FROM {tableName}";
 
                 using (SQLiteCommand selectCmd = new SQLiteCommand(selectQuery, connection))
@@ -70,9 +72,10 @@ namespace OOP2FinalProjectLibrary.Data
             List<Member> memberList = new List<Member>();
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
+                connection.Open();
                 string sql = "Select * from member";
-                SQLiteCommand cmd = new SQLiteCommand(sql, connection);
-                using (cmd)
+
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                 {
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
@@ -98,9 +101,9 @@ namespace OOP2FinalProjectLibrary.Data
             List<Rental> rentalList = new List<Rental>();
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
+                connection.Open();
                 string sql = "Select * from rental";
-                SQLiteCommand cmd = new SQLiteCommand(sql, connection);
-                using (cmd)
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                 {
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
@@ -126,9 +129,9 @@ namespace OOP2FinalProjectLibrary.Data
             List<ItemInRental> iirList = new List<ItemInRental>();
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
+                connection.Open();
                 string sql = "Select * from iteminrental";
-                SQLiteCommand cmd = new SQLiteCommand(sql, connection);
-                using (cmd)
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                 {
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
@@ -152,9 +155,9 @@ namespace OOP2FinalProjectLibrary.Data
             List<Item> itemList = new List<Item>();
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
+                connection.Open();
                 string sql = "Select * from item";
-                SQLiteCommand cmd = new SQLiteCommand(sql, connection);
-                using (cmd)
+                using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                 {
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
@@ -209,8 +212,7 @@ namespace OOP2FinalProjectLibrary.Data
                     LEFT JOIN dvd on i.itemId = dvd.itemId
                     LEFT JOIN magazine m on i.itemId = m.itemId";
 
-                SQLiteCommand cmd = new SQLiteCommand(query, connection);
-                using (cmd)
+                using (SQLiteCommand cmd = new SQLiteCommand(query, connection))
                 {
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
@@ -274,7 +276,7 @@ namespace OOP2FinalProjectLibrary.Data
                                 itemList.Add(dvd);
                                 //dvdList.Add(dvd);
                             }
-                            else
+                            else if (item.Category == "magazine")
                             {
                                 string issn = reader.GetString(reader.GetOrdinal("issn"));
                                 string publication = reader.GetString(reader.GetOrdinal("publication"));
@@ -384,19 +386,20 @@ namespace OOP2FinalProjectLibrary.Data
         }
 
         // InsertItemDB is only used and accessed from Insert{child}DB functions
-        private Item InsertItemDB(string title, string category, string publisher, string genre,
+        public Item InsertItemDB(string title, string category, string publisher, string genre,
             string location, string status, float replaceCost, DateTime pubDate)
         {
             try
             {
-                int newId = GetNextId("rental", "rentalId");
+                int newId = GetNextId("item", "itemId");
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
-                    string sql = "INSERT into item values(@t, @c, @p, @g, @l, @s, @rc, @pd)";
+                    string sql = "INSERT into item values(@id, @t, @c, @p, @g, @l, @s, @rc, @pd)";
 
                     using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                     {
+                        cmd.Parameters.AddWithValue("@id", newId);
                         cmd.Parameters.AddWithValue("@t", title);
                         cmd.Parameters.AddWithValue("@c", category);
                         cmd.Parameters.AddWithValue("@p", publisher);
@@ -593,7 +596,7 @@ namespace OOP2FinalProjectLibrary.Data
         }
 
         // used in conjunction with DeleteItemDB child functions to keep DB consistent
-        private Item InsertItemWhenErrorDB(Item item)
+        public Item InsertItemWhenErrorDB(Item item)
         {
             try
             {
@@ -716,7 +719,7 @@ namespace OOP2FinalProjectLibrary.Data
         }
 
         // UpdateItemDB is only used and accessed from Update{child}DB functions
-        private bool UpdateItemDB(Item i)
+        public bool UpdateItemDB(Item i)
         {
             try
             {
@@ -724,7 +727,7 @@ namespace OOP2FinalProjectLibrary.Data
                 {
                     connection.Open();
 
-                    string sql = "UPDATE item SET title=@title, category=@category, publisher=@publisher, genre=@genre location=@location status=@status replaceCost=@replaceCost pubDate=@pubDate WHERE itemId=@itemId";
+                    string sql = "UPDATE item SET title=@title, category=@category, publisher=@publisher, genre=@genre, location=@location, status=@status, replaceCost=@replaceCost, pubDate=@pubDate WHERE itemId=@itemId";
 
                     using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
                     {
@@ -804,6 +807,7 @@ namespace OOP2FinalProjectLibrary.Data
                             cmd.Parameters.AddWithValue("@isbn", b.Isbn);
                             cmd.Parameters.AddWithValue("@author", b.Author);
                             cmd.Parameters.AddWithValue("@format", b.Format);
+                            cmd.Parameters.AddWithValue("@itemId", b.ItemId);
 
                             cmd.ExecuteNonQuery();
                         }
@@ -838,6 +842,7 @@ namespace OOP2FinalProjectLibrary.Data
                             cmd.Parameters.AddWithValue("@label", cd.Label);
                             cmd.Parameters.AddWithValue("@artist", cd.Artist);
                             cmd.Parameters.AddWithValue("@duration", cd.Duration);
+                            cmd.Parameters.AddWithValue("@itemId", cd.ItemId);
 
                             cmd.ExecuteNonQuery();
                         }
@@ -872,6 +877,7 @@ namespace OOP2FinalProjectLibrary.Data
                             cmd.Parameters.AddWithValue("@director", dvd.Director);
                             cmd.Parameters.AddWithValue("@duration", dvd.Duration);
                             cmd.Parameters.AddWithValue("@format", dvd.Format);
+                            cmd.Parameters.AddWithValue("@itemId", dvd.ItemId);
 
                             cmd.ExecuteNonQuery();
                         }
@@ -906,6 +912,7 @@ namespace OOP2FinalProjectLibrary.Data
                             cmd.Parameters.AddWithValue("@publication", m.Publication);
                             cmd.Parameters.AddWithValue("@issn", m.Issn);
                             cmd.Parameters.AddWithValue("@coverDate", m.CoverDate);
+                            cmd.Parameters.AddWithValue("@itemId", m.ItemId);
 
                             cmd.ExecuteNonQuery();
                         }
@@ -1157,6 +1164,158 @@ namespace OOP2FinalProjectLibrary.Data
                 }
             }
             else { return "Error. Item was not Deleted"; }
+        }
+
+/* =====================================================================================
+ * SEARCH FUNCTIONS
+ */
+        public List<Item> SearchItemsDB(string titleField, string catField, string statusField, string locationField, bool isTitle, bool isCategory, bool isStatus, bool isLocation)
+        {
+            List<string> sColumnList = new List<string>();
+            List<string> sTermsList = new List<string>();  
+
+            if (isTitle)
+            {
+                sColumnList.Add("title LIKE");
+                sTermsList.Add($"%{titleField}%");
+            }
+            if (isCategory)
+            {
+                sColumnList.Add("category LIKE");
+                sTermsList.Add($"{catField}");
+            }
+            if (isStatus)
+            {
+                sColumnList.Add("status LIKE");
+                sTermsList.Add($"{statusField}");
+            }
+            if (isLocation)
+            {
+                sColumnList.Add("location LIKE");
+                sTermsList.Add($"{locationField}");
+            }
+
+            if (sColumnList.Count == 0)
+            {
+                return new List<Item>(); // No search criteria
+            }
+
+            string whereClause = $@"{sColumnList[0]} '{sTermsList[0]}' ";
+            for (int i = 1; i < sColumnList.Count(); i++)
+            {
+                whereClause += $@"AND {sColumnList[i]} '{sTermsList[i]}' ";
+            }
+
+            // SQL query
+            //string query = $"SELECT * FROM Item WHERE {whereClause}";
+            string query = $@"
+                    SELECT i.*, 
+                        b.Isbn as bookisbn, b.Author as bookauthor, b.Format as bookformat, 
+                        ab.Duration as abduration, ab.Narrator, ab.isbn as abisbn, ab.author as abauthor,
+                        cd.artist, cd.label, cd.duration as cdduration,
+                        m.issn, m.coverdate, m.publication,
+                        dvd.director, dvd.duration as dvdduration, dvd.format as dvdformat             
+                    FROM Item i
+                        LEFT JOIN Book b ON i.ItemId = b.ItemId
+                        LEFT JOIN Audiobook ab ON i.ItemId = ab.ItemId
+                        LEFT JOIN cd on i.itemId = cd.itemId
+                        LEFT JOIN dvd on i.itemId = dvd.itemId
+                        LEFT JOIN magazine m on i.itemId = m.itemId
+                    WHERE {whereClause}";
+
+            try
+            {
+                List<Item> itemList = new List<Item>();
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, connection))
+                    {
+                        using (SQLiteDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {                              
+                                Item item = new Item
+                                {
+                                    ItemId = reader.GetInt32(reader.GetOrdinal("ItemId")),
+                                    Title = reader.GetString(reader.GetOrdinal("Title")),
+                                    Category = reader.GetString(reader.GetOrdinal("Category")),
+                                    Publisher = reader.GetString(reader.GetOrdinal("Publisher")),
+                                    Genre = reader.GetString(reader.GetOrdinal("Genre")),
+                                    Location = reader.GetString(reader.GetOrdinal("Location")),
+                                    Status = reader.GetString(reader.GetOrdinal("Status")),
+                                    ReplaceCost = reader.GetFloat(reader.GetOrdinal("ReplaceCost")),
+                                    PubDate = reader.GetDateTime(reader.GetOrdinal("PubDate"))
+                                };
+
+                                if (item.Category.ToLower() == "book")
+                                {
+                                    string isbn = reader.GetString(reader.GetOrdinal("bookisbn"));
+                                    string author = reader.GetString(reader.GetOrdinal("bookauthor"));
+                                    string format = reader.GetString(reader.GetOrdinal("bookformat"));
+
+                                    Book book = new Book(item, isbn, author, format);
+
+                                    itemList.Add(book);
+                                    //bookList.Add(book);
+                                }
+                                else if (item.Category.ToLower() == "cd")
+                                {
+                                    string artist = reader.GetString(reader.GetOrdinal("artist"));
+                                    string label = reader.GetString(reader.GetOrdinal("label"));
+                                    string duration = reader.GetString(reader.GetOrdinal("cdduration"));
+
+                                    Cd cd = new Cd(item, artist, label, duration);
+
+                                    itemList.Add(cd);
+                                    //cdList.Add(cd);
+                                }
+                                else if (item.Category.ToLower() == "audiobook")
+                                {
+                                    string author = reader.GetString(reader.GetOrdinal("abauthor"));
+                                    string isbn = reader.GetString(reader.GetOrdinal("abisbn"));
+                                    string duration = reader.GetString(reader.GetOrdinal("abduration"));
+                                    string narrator = reader.GetString(reader.GetOrdinal("narrator"));
+
+                                    Audiobook audiobook = new Audiobook(item, author, isbn, duration, narrator);
+
+                                    itemList.Add(audiobook);
+                                    //abList.Add(audiobook);
+                                }
+                                else if (item.Category.ToLower() == "dvd")
+                                {
+                                    string director = reader.GetString(reader.GetOrdinal("director"));
+                                    string duration = reader.GetString(reader.GetOrdinal("dvdduration"));
+                                    string format = reader.GetString(reader.GetOrdinal("dvdformat"));
+
+                                    Dvd dvd = new Dvd(item, director, duration, format);
+
+                                    itemList.Add(dvd);
+                                    //dvdList.Add(dvd);
+                                }
+                                else if (item.Category.ToLower() == "magazine")
+                                {
+                                    string issn = reader.GetString(reader.GetOrdinal("issn"));
+                                    string publication = reader.GetString(reader.GetOrdinal("publication"));
+                                    DateTime coverDate = reader.GetDateTime(reader.GetOrdinal("coverdate"));
+
+                                    Magazine mag = new Magazine(item, issn, publication, coverDate);
+
+                                    itemList.Add(mag);
+                                    //magList.Add(mag);
+                                }
+                            }
+                        }
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                return itemList;
+            }
+            catch (Exception e)
+            {
+                return new List<Item>();
+            }
         }
     }
 }

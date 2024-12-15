@@ -11,16 +11,30 @@
     <div class="box">
         <h3>Search Inventory</h3>
         <p>Search by:</p>
-        <input type="checkbox" @bind="sTitle">
+
         <label for="title">Title</label><br />
-        <input type="checkbox" @bind="sStatus">
+        <input type="text" placeholder="Search by Title" @bind="titleField">
         <label for="availability">Availability</label><br />
-        <input type="checkbox" @bind="sCategory">
+        <select @onchange="e => OnSStatusChanged(e)">
+            <option value="available">Available</option>
+            <option value="rented">Rented</option>
+        </select>
         <label for="category">Category</label>
-        <input type="checkbox" @bind="sLocation">
+        <select @onchange="e => OnSCategoryChanged(e)">
+            <option value="Audiobook">Audiobook</option>
+            <option value="Book">Book</option>
+            <option value="Cd">CD</option>
+            <option value="Dvd">DVD</option>
+            <option value="Magazine">Magazine</option>
+        </select>
         <label for="location">Location</label>
+        <select @onchange="e => OnSLocationChanged(e)">
+            <option value="City Center">City Center</option>
+            <option value="Lakeside">Lakeside</option>
+            <option value="East Village">East Village</option>
+            <option value="North Hill">North Hill</option>
+        </select>
         <br /><br />
-        <input type="text" placeholder="Search by Title, Category, Location" @bind="searchField">
         <button @onclick="SearchItems">Search</button>
 
         <select @onchange="PopulateItemFields">
@@ -45,103 +59,215 @@
             <input type="text" @bind="itemId" readonly />
         <br />
             <label for="title">Title</label>
-            <input type="text" @bind="title" />
+            <input type="text" @bind="title" readonly />
         <br />
             <label for="category">Category</label>
-            <input type="text" @bind="category" />
+        <input type="text" @bind="category" readonly />
         <br />
             <label for="publisher">Publisher</label>
-            <input type="text" @bind="publisher" />
+        <input type="text" @bind="publisher" readonly />
         <br />
             <label for="genre">Genre</label>
-            <input type="text" @bind="genre" />
+        <input type="text" @bind="genre" readonly />
         <br />
             <label for="location">Location</label>
-            <input type="text" @bind="location" />
+        <input type="text" @bind="location" readonly />
         <br/>
             <label for="status">Availability</label>
-            <input type="text" @bind="status" />
+        <input type="text" @bind="status" readonly />
         <br />
             <label for="replacecost">Replacement Cost</label>
-            <input type="text" @bind="replaceCost" />
+        <input type="text" @bind="replaceCost" readonly />
         <br />
             <label for="pubdate">Date Published</label>
-            <input type="text" @bind="pubDate" />
+        <input type="text" @bind="pubDate" readonly />
         <br />
         @if (audiobookFields)
         {
             <label for="isbn">ISBN (Format: 999-99-99999-99-9)</label>
-            <input type="text" @bind="addIsbn" />
+            <input type="text" @bind="isbn" readonly />
             <br />
             <label for="author">Author</label>
-            <input type="text" @bind="addAuthor" />
+            <input type="text" @bind="author" readonly/>
             <br />
             <label for="duration">Duration</label>
-            <input type="text" @bind="addDuration" />
+            <input type="text" @bind="duration" readonly />
             <br />
             <label for="narrator">Narrator</label>
-            <input type="text" @bind="addNarrator" />
+            <input type="text" @bind="narrator" readonly />
             <br />
         }
         @if (bookFields)
         {
             <label for="isbn">ISBN (Format: 999-99-99999-99-9)</label>
-            <input type="text" @bind="addIsbn" />
+            <input type="text" @bind="isbn" readonly />
             <br />
             <label for="author">Author</label>
-            <input type="text" @bind="addAuthor" />
+            <input type="text" @bind="author" readonly />
             <br />
             <label for="format">Format</label>
-            <select @onchange="e => OnFormatChanged(e)">
-                <option value="softcover">Softcover</option>
-                <option value="hardcover">Hardcover</option>
-                <option value="ebook">EBook</option>
-            </select>
+            <input type="text" @bind="format" readonly />
             <br />
         }
         @if (cdFields)
         {
             <label for="artist">Artist</label>
-            <input type="text" @bind="addArtist" />
+            <input type="text" @bind="artist" readonly />
             <br />
             <label for="label">Label</label>
-            <input type="text" @bind="addLabel" />
+            <input type="text" @bind="label" readonly />
             <br />
             <label for="duration">Duration</label>
-            <input type="text" @bind="addDuration" />
+            <input type="text" @bind="duration" readonly />
             <br />
         }
         @if (dvdFields)
         {
             <label for="directior">Director</label>
-            <input type="text" @bind="addDirector" />
+            <input type="text" @bind="director" readonly />
             <br />
             <label for="duration">Duration</label>
-            <input type="text" @bind="addDuration" />
+            <input type="text" @bind="duration" readonly />
             <br />
             <label for="format">Format</label>
-            <select @onchange="e => OnFormatChanged(e)">
-                <option value="dvd">DVD</option>
-                <option value="blu-ray">Blu-Ray</option>
-            </select>
+            <input type="text" @bind="format" readonly />
             <br />
         }
         @if (magazineFields)
         {
             <label for="publication">Publication</label>
-            <input type="text" @bind="addPublication" />
+            <input type="text" @bind="publication" readonly />
             <br />
             <label for="issn">ISSN (Format: 9999-9999)</label>
-            <input type="text" @bind="addLabel" />
+            <input type="text" @bind="issn" readonly />
             <br />
             <label for="coverdate">Cover Date</label>
-            <input type="date" @bind="addCoverDate" />
+            <input type="date" @bind="coverDate" readonly />
             <br />
         }
-        <button type="submit" @onclick="DeleteItem">Delete</button>
-        <button type="submit" @onclick="EditItemInfo">Save</button>
-        <button type="reset" @onclick="ClearFields">Clear</button>
-        <button @onclick="ShowAddItemPopUp">Add to Rental</button>
+        <button type="submit" @onclick="DeleteItem">Delete Item</button>
+        <button type="reset" @onclick="ClearDisplayedFields">Clear</button>
+        <button @onclick="ShowEditItemPopUp">Edit Item</button>
+        <button @onclick="ShowAddItemPopUp">Add New Item</button>
+    </div>
+    <div>
+        @if (isEditItemVisible)
+        {
+            <div class="popup">
+                <div class="popup-content">
+                    <label for="itemId">ID</label>
+                    <input type="text" @bind="itemId" readonly/>
+                    <br />
+                    <label for="title">Title</label>
+                    <input type="text" @bind="editTitle" />
+                    <br />
+                    <label for="category">Category</label>
+                    <input type="text" @bind="editCat" readonly/>
+                    <br />
+                    <label for="publisher">Publisher</label>
+                    <input type="text" @bind="editPub" />
+                    <br />
+                    <label for="genre">Genre</label>
+                    <input type="text" @bind="editGenre" />
+                    <br />
+                    <label for="location">Location</label>
+                    <select @onchange="e => OnEditLocationChanged(e)">
+                        <option disabled selected="selected">Select Location</option>
+                        <option value="North Hill">North Hill</option>
+                        <option value="City Center">City Center</option>
+                        <option value="East Village">East Village</option>
+                        <option value="Lakeside">Lakeside</option>
+                    </select>
+                    <select @onchange="e => OnEditStatusChanged(e)">
+                        <option disabled selected="selected">Select Status</option>
+                        <option value="available">Available</option>
+                        <option value="rented">Rented</option>
+                    </select>
+                    <br />
+                    <label for="replacecost">Replacement Cost</label>
+                    <input type="text" @bind="editReplaceCost" />
+                    <br />
+                    <label for="pubdate">Date Published</label>
+                    <input type="text" @bind="editPubDate" />
+                    <br />
+
+                    @if (editAudiobookFields)
+                    {
+                        <label for="isbn">ISBN (Format: 999-99-99999-99-9)</label>
+                        <input type="text" @bind="editIsbn" />
+                        <br />
+                        <label for="author">Author</label>
+                        <input type="text" @bind="editAuthor" />
+                        <br />
+                        <label for="duration">Duration</label>
+                        <input type="text" @bind="editDuration" />
+                        <br />
+                        <label for="narrator">Narrator</label>
+                        <input type="text" @bind="editNarrator" />
+                        <br />
+                    }
+                    @if (addBookFields)
+                    {
+                        <label for="isbn">ISBN (Format: 999-99-99999-99-9)</label>
+                        <input type="text" @bind="editIsbn" />
+                        <br />
+                        <label for="author">Author</label>
+                        <input type="text" @bind="editAuthor" />
+                        <br />
+                        <label for="format">Format</label>
+                        <select @onchange="e => OnEditFormatChanged(e)">
+                            <option value="softcover">Softcover</option>
+                            <option value="hardcover">Hardcover</option>
+                            <option value="ebook">EBook</option>
+                        </select>
+                        <br />
+                    }
+                    @if (editCdFields)
+                    {
+                        <label for="artist">Artist</label>
+                        <input type="text" @bind="editArtist" />
+                        <br />
+                        <label for="label">Label</label>
+                        <input type="text" @bind="editLabel" />
+                        <br />
+                        <label for="duration">Duration</label>
+                        <input type="text" @bind="editDuration" />
+                        <br />
+                    }
+                    @if (editDvdFields)
+                    {
+                        <label for="directior">Director</label>
+                        <input type="text" @bind="editDirector" />
+                        <br />
+                        <label for="duration">Duration</label>
+                        <input type="text" @bind="editDuration" />
+                        <br />
+                        <label for="format">Format</label>
+                        <select @onchange="e => OnEditFormatChanged(e)">
+                            <option value="dvd">DVD</option>
+                            <option value="blu-ray">Blu-Ray</option>
+                        </select>
+                        <br />
+                    }
+                    @if (editMagazineFields)
+                    {
+                        <label for="publication">Publication</label>
+                        <input type="text" @bind="editPublication" />
+                        <br />
+                        <label for="issn">ISSN (Format: 9999-9999)</label>
+                        <input type="text" @bind="editLabel" />
+                        <br />
+                        <label for="coverdate">Cover Date</label>
+                        <input type="date" @bind="editCoverDate" />
+                        <br />
+                    }
+                    <button class="close" @onclick="CloseEditItemPopUp">Close</button>
+                    <button class="edit" @onclick="EditItemInfo">Save Item</button>
+                    <p></p>
+                </div>
+            </div>
+        }
+
     </div>
     <div>
         @if (isAddItemVisible)
@@ -153,7 +279,7 @@
                         <input type="text" @bind="addTitle" />
                     <br />
                     <label for="category">Category</label>
-                        <select @onchange="e => OnCategoryChanged(e)">
+                        <select @onchange="e => OnAddCategoryChanged(e)">
                             <option disabled selected="selected">Select Category</option>
                             <option value="Audiobook">Audiobook</option>
                             <option value="Book">Book</option>
@@ -169,7 +295,7 @@
                         <input type="text" @bind="addGenre" />
                     <br />
                         <label for="location">Location</label>
-                        <select @onchange="e => OnLocationChanged(e)">
+                        <select @onchange="e => OnAddLocationChanged(e)">
                             <option disabled selected="selected">Select Location</option>
                             <option value="North Hill">Audiobook</option>
                             <option value="City Center">Book</option>
@@ -208,7 +334,7 @@
                             <input type="text" @bind="addAuthor" />
                         <br />
                             <label for="format">Format</label>
-                            <select @onchange="e => OnFormatChanged(e)">
+                            <select @onchange="e => OnAddFormatChanged(e)">
                                 <option value="softcover">Softcover</option>
                                 <option value="hardcover">Hardcover</option>
                                 <option value="ebook">EBook</option>
@@ -236,7 +362,7 @@
                             <input type="text" @bind="addDuration" />
                         <br />
                             <label for="format">Format</label>
-                            <select @onchange="e => OnFormatChanged(e)">
+                            <select @onchange="e => OnAddFormatChanged(e)">
                                 <option value="dvd">DVD</option>
                                 <option value="blu-ray">Blu-Ray</option>
                             </select>
@@ -254,7 +380,7 @@
                             <input type="date" @bind="addCoverDate"/>
                         <br />
                     }
-                    <button class="close" @onclick="ClosePopUp">&times;</button>
+                    <button class="close" @onclick="CloseAddItemPopUp">Close</button>
                     <button class="add" @onclick="AddItem">Add Item</button>
                     <p></p>
                 </div>
@@ -264,9 +390,11 @@
     </div>
     @if (alert)
     {
-        <div class="alert-box">
-            <p>@message</p>
-            <button @onclick="CloseAlertBox">OK</button>
+        <div class="popup">
+            <div class="popup-content">
+                <p>@message</p>
+                <button @onclick="CloseAlertBox">OK</button>
+            </div>           
         </div>
     }
 </section>
@@ -293,13 +421,13 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .close {
+/*     .close {
         position: absolute;
         top: 10px;
         right: 20px;
         cursor: pointer;
         font-size: 20px;
-    }
+    } */
 
     .alert-box {
         display: flex;
@@ -312,7 +440,7 @@
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-        z-index: 9999; /* Make sure it's on top */
+        z-index: 9999; 
         width: 300px;
         text-align: center;
     }
@@ -338,14 +466,15 @@
 </style>
 @code {
 
-    // search criteria selectors
-    private bool sTitle = false;
-    private bool sCategory = false;
-    private bool sLocation = false;
-    private bool sStatus = false;
-    private string searchField = "";
+    /* ==============================================================================
+ * search criteria selectors */
+    private string titleField = "";
+    private string catField = "";
+    private string locationField = "";
+    private string statusField = "";
 
-    // displayed item info fields
+    /* ==============================================================================
+     * DISPLAYED INFO */
     private int itemId = 0;
     private string title = "";
     private string category = "";
@@ -355,7 +484,6 @@
     private string status = "";
     private float replaceCost = 0;
     private DateTime pubDate = DateTime.MinValue;
-
     // displayed item child info fields
     private string isbn = "";
     private string author = "";
@@ -369,7 +497,6 @@
     private string issn = "";
     private string duration = "";
     private DateTime coverDate = DateTime.MinValue;
-
     // displayed child field bools
     private bool audiobookFields = false;
     private bool bookFields = false;
@@ -377,6 +504,39 @@
     private bool dvdFields = false;
     private bool magazineFields = false;
 
+    /* ==============================================================================
+     * EDIT */
+    // private int editId = 0;
+    private string editTitle = "";
+    private string editCat = "";
+    private string editPub = "";
+    private string editGenre = "";
+    private string editLocation = "";
+    private string editStatus = "";
+    private float editReplaceCost = 0;
+    private DateTime editPubDate = DateTime.MinValue;
+    // edit item child fields
+    private string editIsbn = "";
+    private string editAuthor = "";
+    private string editDuration = "";
+    private string editNarrator = "";
+    private string editFormat = "";
+    private string editArtist = "";
+    private string editLabel = "";
+    private string editDirector = "";
+    private string editPublication = "";
+    private string editIssn = "";
+    private DateTime editCoverDate = DateTime.MinValue;
+    // category dropdown in edit item
+    private bool isEditItemVisible = false;
+    private bool editAudiobookFields = false;
+    private bool editBookFields = false;
+    private bool editCdFields = false;
+    private bool editDvdFields = false;
+    private bool editMagazineFields = false;
+
+    /* ==============================================================================
+     * ADD */
     // add item fields
     private string addTitle = "";
     private string addCategory = "";
@@ -385,7 +545,6 @@
     private string addLocation = "";
     private float addReplaceCost = 0;
     private DateTime addPubDate = DateTime.MinValue;
-
     // add item child fields
     private string addIsbn = "";
     private string addAuthor = "";
@@ -398,7 +557,6 @@
     private string addPublication = ""; 
     private string addIssn = "";
     private DateTime addCoverDate = DateTime.MinValue;
-
     // category dropdown in add item
     private bool isAddItemVisible = false;
     private bool addAudiobookFields = false;
@@ -407,20 +565,78 @@
     private bool addDvdFields = false;
     private bool addMagazineFields = false;
 
+    /* ==============================================================================
+     * MISC */
     private bool alert = false;
     string message = "";
 
     // List of found items
     private List<Item> foundList = new List<Item>();
 
+    /* ==============================================================================
+     *                          FUNCTIONS */
+
+    /* ==============================================================================
+     * SEARCH */
+    private void SearchItems()
+    {
+        bool isTitle = false;
+        bool isCategory = false;
+        bool isLocation = false;
+        bool isStatus = false;
+
+        DBHandler db = new DBHandler();
+        if (!String.IsNullOrEmpty(catField))
+        {
+            isCategory = true;
+        }
+        if (!String.IsNullOrEmpty(titleField))
+        {
+            isTitle = true;
+        }
+        if (!String.IsNullOrEmpty(statusField))
+        {
+            isStatus = true;
+        }
+        if (!String.IsNullOrEmpty(locationField))
+        {
+            isLocation = true;
+        }
+
+        foundList = db.SearchItemsDB(titleField, catField, statusField, locationField, isTitle, isCategory, isStatus, isLocation);
+        StateHasChanged();
+    }
+
+    private void OnSCategoryChanged(ChangeEventArgs e)
+    {
+        catField = e.Value?.ToString();
+    }
+    private void OnSStatusChanged(ChangeEventArgs e)
+    {
+        statusField = e.Value?.ToString();
+    }
+    private void OnSLocationChanged(ChangeEventArgs e)
+    {
+        locationField = e.Value?.ToString();
+    }
+
+    /* ==============================================================================
+     * DISPLAYED FIELDS */
     private void PopulateItemFields(ChangeEventArgs e)
     {
+        audiobookFields = false;
+        bookFields = false;
+        cdFields = false;
+        dvdFields = false;
+        magazineFields = false;
+
         if (int.TryParse(e.Value.ToString(), out int selectedItemId))
         {
             Item selectedItem = foundList.FirstOrDefault(i => i.ItemId == selectedItemId);
             if (selectedItem != null)
             {
                 itemId = selectedItem.ItemId;
+                title = selectedItem.Title;
                 category = selectedItem.Category;
                 publisher = selectedItem.Publisher;
                 genre = selectedItem.Genre;
@@ -431,15 +647,19 @@
 
                 if (selectedItem is Audiobook ab)
                 {
+                    audiobookFields = true;
+
                     isbn = ab.Isbn;
                     author = ab.Author;
-                    addDuration = ab.Duration;
+                    duration = ab.Duration;
                     narrator = ab.Narrator;
 
                     audiobookFields = true;
                 }
                 if (selectedItem is Book b)
                 {
+                    bookFields = true;
+
                     isbn = b.Isbn;
                     author = b.Author;
                     format = b.Format;
@@ -448,6 +668,8 @@
                 }
                 if (selectedItem is Cd cd)
                 {
+                    cdFields = true;
+
                     artist = cd.Artist;
                     label = cd.Label;
                     duration = cd.Duration;
@@ -456,6 +678,8 @@
                 }
                 if (selectedItem is Dvd dvd)
                 {
+                    dvdFields = true;
+
                     director = dvd.Director;
                     duration = dvd.Duration;
                     format = dvd.Format;
@@ -464,117 +688,18 @@
                 }
                 if (selectedItem is Magazine m)
                 {
+                    magazineFields = true;
+
                     publication = m.Publication;
                     issn = m.Issn;
                     coverDate = m.CoverDate;
-
-                    magazineFields = true;
-                }         
+                }
                 StateHasChanged();
             }
         }
     }
 
-    private void SearchItems()
-    {
-        DBHandler db = new DBHandler();
-        if (sCategory && searchField.ToLower() == "audiobook" || !sCategory)
-        {
-            AudiobookManager am = new AudiobookManager(db);
-            List<Audiobook> abList = am.SearchItem(searchField, sTitle, sCategory, sStatus, sLocation);
-            foreach (Audiobook ab in abList)
-            {
-                foundList.Add(ab);
-            }
-        }
-        else if (sCategory && searchField.ToLower() == "book" || !sCategory)
-        {
-            BookManager bm = new BookManager(db);
-            List<Book> bList = bm.SearchItem(searchField, sTitle, sCategory, sStatus, sLocation);
-            foreach (Book b in bList)
-            {
-                foundList.Add(b);
-            }
-        }
-        else if (sCategory && searchField.ToLower() == "cd" || !sCategory)
-        {
-            CdManager cdm = new CdManager(db);
-            List<Cd> cdList = cdm.SearchItem(searchField, sTitle, sCategory, sStatus, sLocation);
-            foreach (Cd cd in cdList)
-            {
-                foundList.Add(cd);
-            }
-        }
-        else if (sCategory && searchField.ToLower() == "dvd" || !sCategory)
-        {
-            DvdManager dvdm = new DvdManager(db);
-            List<Dvd> dvdList = dvdm.SearchItem(searchField, sTitle, sCategory, sStatus, sLocation);
-            foreach (Dvd dvd in dvdList)
-            {
-                foundList.Add(dvd);
-            }
-        }
-        else if (sCategory && searchField.ToLower() == "magazine" || !sCategory)
-        {
-            MagazineManager mm = new MagazineManager(db);
-            List<Magazine> magList = mm.SearchItem(searchField, sTitle, sCategory, sStatus, sLocation);
-            foreach (Magazine m in magList)
-            {
-                foundList.Add(m);
-            }
-        }
-        StateHasChanged();
-    }
-
-    private void EditItemInfo()
-    {
-        if (itemId > 0)
-        {
-            DBHandler db = new DBHandler();
-            if (category == "Audiobook")
-            {
-                Audiobook ab = new Audiobook(
-                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
-                        isbn, author, duration, narrator);               
-                AudiobookManager abm = new AudiobookManager(db);
-                message = abm.UpdateItem(ab);
-            }
-            if (category == "Book")
-            {
-                Book b = new Book(
-                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
-                        isbn, author, format);
-                BookManager bm = new BookManager(db);
-                message = bm.UpdateItem(b);
-            }
-            if (category == "Cd")
-            {
-                Cd cd = new Cd(
-                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
-                        artist, label, duration);
-                CdManager cdm = new CdManager(db);
-                message = cdm.UpdateItem(cd);
-            }
-            if (category == "Dvd")
-            {
-                Dvd dvd = new Dvd(
-                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
-                        director, duration, format);
-                DvdManager dvdm = new DvdManager(db);
-                message = dvdm.UpdateItem(dvd);
-            }
-            if (category == "Magazine")
-            {
-                Magazine m = new Magazine(
-                    itemId, title, category, publisher, genre, location, status, replaceCost, pubDate,
-                        publication, issn, coverDate);
-                MagazineManager mm = new MagazineManager(db);
-                message = mm.UpdateItem(m);
-            }
-        }
-    }
-
-    private void ClearFields()
+    private void ClearDisplayedFields()
     {
         itemId = 0;
         title = "";
@@ -599,44 +724,80 @@
         duration = "";
         coverDate = DateTime.MinValue;
 
+        audiobookFields = false;
+        bookFields = false;
+        cdFields = false;
+        dvdFields = false;
+        magazineFields = false;
+
+        StateHasChanged();
+    }
+    private void ClearEditFields()
+    {
+        // editId = 0;
+        editTitle = "";
+        editCat = "";
+        editPub = "";
+        editGenre = "";
+        editLocation = "";
+        editReplaceCost = 0;
+        editPubDate = DateTime.MinValue;
+        // edit item child fields
+        editIsbn = "";
+        editAuthor = "";
+        editDuration = "";
+        editNarrator = "";
+        editFormat = "";
+        editArtist = "";
+        editLabel = "";
+        editDirector = "";
+        editPublication = "";
+        editIssn = "";
+        editCoverDate = DateTime.MinValue;
+        // category dropdown in edit item
+        isEditItemVisible = false;
+        editAudiobookFields = false;
+        editBookFields = false;
+        editCdFields = false;
+        editDvdFields = false;
+        editMagazineFields = false;
+
+        StateHasChanged();
+    }
+    private void ClearAddFields()
+    {
+        addTitle = "";
+        addCategory = "";
+        addPub = "";
+        addGenre = "";
+        addLocation = "";
+        addReplaceCost = 0;
+        addPubDate = DateTime.MinValue;
+        // add item child fields
+        addIsbn = "";
+        addAuthor = "";
+        addDuration = "";
+        addNarrator = "";
+        addFormat = "";
+        addArtist = "";
+        addLabel = "";
+        addDirector = "";
+        addPublication = "";
+        addIssn = "";
+        addCoverDate = DateTime.MinValue;
+        // category dropdown in add item
+        isAddItemVisible = false;
+        addAudiobookFields = false;
+        addBookFields = false;
+        addCdFields = false;
+        addDvdFields = false;
+        addMagazineFields = false;
+
         StateHasChanged();
     }
 
-    private void AddItem()
-    {
-        DBHandler db = new DBHandler();
-        if (addAudiobookFields)
-        {
-            AudiobookManager m = new AudiobookManager(db);
-            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "avaialable", addReplaceCost, addPubDate,
-            addIsbn, addAuthor, addDuration, addNarrator);
-        }
-        else if (addBookFields)
-        {
-            BookManager m = new BookManager(db);
-            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "avaialable", addReplaceCost, addPubDate,
-            addIsbn, addAuthor, addFormat);
-        }
-        else if (addCdFields)
-        {
-            CdManager m = new CdManager(db);
-            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "avaialable", addReplaceCost, addPubDate,
-            addArtist, addLabel, addDuration);
-        }
-        else if (addBookFields)
-        {
-            DvdManager m = new DvdManager(db);
-            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "avaialable", addReplaceCost, addPubDate,
-            addDirector, addDuration, addFormat);
-        }
-        else if (addBookFields)
-        {
-            MagazineManager m = new MagazineManager(db);
-            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "avaialable", addReplaceCost, addPubDate,
-            addPublication, addIssn, addCoverDate);
-        }
-    }
-
+    /* ==============================================================================
+     * DELETE */
     private void DeleteItem()
     {
         DBHandler db = new DBHandler();
@@ -682,23 +843,171 @@
         }
     }
 
+    /* ==============================================================================
+     * EDIT */
+    private void EditItemInfo()
+    {
+        if (itemId > 0)
+        {
+            DBHandler db = new DBHandler();
+            if (category.ToLower() == "audiobook")
+            {
+                Audiobook ab = new Audiobook(
+                    itemId, editTitle, editCat, editPub, editGenre, editLocation, editStatus, editReplaceCost, editPubDate,
+                        editIsbn, editAuthor, editDuration, editNarrator);
+                AudiobookManager abm = new AudiobookManager(db);
+                message = abm.UpdateItem(ab);
+            }
+            if (category.ToLower() == "book")
+            {
+                Book b = new Book(
+                    itemId, editTitle, editCat, editPub, editGenre, editLocation, editStatus, editReplaceCost, editPubDate,
+                        editIsbn, editAuthor, editFormat);
+                BookManager bm = new BookManager(db);
+                message = bm.UpdateItem(b);
+            }
+            if (category.ToLower() == "cd")
+            {
+                Cd cd = new Cd(
+                    itemId, editTitle, editCat, editPub, editGenre, editLocation, editStatus, editReplaceCost, editPubDate,
+                        editArtist, editLabel, editDuration);
+                CdManager cdm = new CdManager(db);
+                message = cdm.UpdateItem(cd);
+            }
+            if (category.ToLower() == "dvd")
+            {
+                Dvd dvd = new Dvd(
+                    itemId, editTitle, editCat, editPub, editGenre, editLocation, editStatus, editReplaceCost, editPubDate,
+                        editDirector, editDuration, editFormat);
+                DvdManager dvdm = new DvdManager(db);
+                message = dvdm.UpdateItem(dvd);
+            }
+            if (category.ToLower() == "magazine")
+            {
+                Magazine m = new Magazine(
+                    itemId, editTitle, editCat, editPub, editGenre, editLocation, editStatus, editReplaceCost, editPubDate,
+                        editPublication, editIssn, editCoverDate);
+                MagazineManager mm = new MagazineManager(db);
+                message = mm.UpdateItem(m);
+            }
+            CloseEditItemPopUp();
+            alert = true;
+        }
+    }
+
+    private void ShowEditItemPopUp()
+    {
+        editTitle = title;
+        editCat = category;
+        editPub = publisher;
+        editGenre = genre;
+        editLocation = location;
+        editStatus = status;
+        editReplaceCost = replaceCost;
+        editPubDate = pubDate;
+
+        editArtist = artist;
+        editLabel = label;
+        editDuration = duration;
+        editAuthor = author;
+        editIsbn = isbn;
+        editNarrator = narrator;
+        editFormat = format;
+        editDirector = director;
+        editIssn = issn;
+        editPublication = publication;
+        editCoverDate = coverDate;
+
+        if (category.ToLower() == "audiobook")
+        {
+            editAudiobookFields = true;
+        }
+        if (category.ToLower() == "book")
+        {
+            editBookFields = true;
+        }
+        if (category.ToLower() == "cd")
+        {
+            editCdFields = true;
+        }
+        if (category.ToLower() == "dvd")
+        {
+            editDvdFields = true;
+        }
+        if (category.ToLower() == "magazine")
+        {
+            editMagazineFields = true;
+        }
+        isEditItemVisible = true;
+    }
+    private void CloseEditItemPopUp()
+    {
+        ClearEditFields();
+        isEditItemVisible = false;
+    }
+
+    private void OnEditLocationChanged(ChangeEventArgs e)
+    {
+        editLocation = e.Value?.ToString();
+    }
+    private void OnEditFormatChanged(ChangeEventArgs e)
+    {
+        editFormat = e.Value?.ToString();
+    }
+    private void OnEditStatusChanged(ChangeEventArgs e)
+    {
+        editStatus = e.Value?.ToString();
+    }
+
+/* ==============================================================================
+ * ADD */
+    private void AddItem()
+    {
+        DBHandler db = new DBHandler();
+        if (addAudiobookFields)
+        {
+            AudiobookManager m = new AudiobookManager(db);
+            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "available", addReplaceCost, addPubDate,
+            addIsbn, addAuthor, addDuration, addNarrator);
+        }
+        else if (addBookFields)
+        {
+            BookManager m = new BookManager(db);
+            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "available", addReplaceCost, addPubDate,
+            addIsbn, addAuthor, addFormat);
+        }
+        else if (addCdFields)
+        {
+            CdManager m = new CdManager(db);
+            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "available", addReplaceCost, addPubDate,
+            addArtist, addLabel, addDuration);
+        }
+        else if (addBookFields)
+        {
+            DvdManager m = new DvdManager(db);
+            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "available", addReplaceCost, addPubDate,
+            addDirector, addDuration, addFormat);
+        }
+        else if (addBookFields)
+        {
+            MagazineManager m = new MagazineManager(db);
+            message = m.AddItem(0, addTitle, addCategory, addPub, addGenre, addLocation, "available", addReplaceCost, addPubDate,
+            addPublication, addIssn, addCoverDate);
+        }
+        CloseAddItemPopUp();
+        alert = true;
+    }
+
     private void ShowAddItemPopUp()
     {
         isAddItemVisible = true; 
     }
 
-    private void ClosePopUp()
+    private void CloseAddItemPopUp()
     {
-        ClearFields();
+        ClearAddFields();
         isAddItemVisible = false; 
     }
-
-    private void OnCategoryChanged(ChangeEventArgs e)
-    {
-        addCategory = e.Value?.ToString(); // Updates the `category` field
-        ChangeAddItemCategory();       // Calls your custom method
-    }
-
     private void ChangeAddItemCategory()
     {
         addAudiobookFields = false;
@@ -706,7 +1015,7 @@
         addCdFields = false;
         addDvdFields = false;
         addMagazineFields = false;
-        switch(category)
+        switch(addCategory)
         {
             case "Audiobook":
                 addAudiobookFields = true;
@@ -725,19 +1034,27 @@
                 break;
         }
     }
-    private void OnLocationChanged(ChangeEventArgs e)
+
+    private void OnAddLocationChanged(ChangeEventArgs e)
     {
-        addLocation = e.Value?.ToString(); // Updates the `category` field
+        addLocation = e.Value?.ToString();
     }
-    private void OnFormatChanged(ChangeEventArgs e)
+    private void OnAddFormatChanged(ChangeEventArgs e)
     {
-        addFormat = e.Value?.ToString(); // Updates the `category` field
+        addFormat = e.Value?.ToString();
     }
+    private void OnAddCategoryChanged(ChangeEventArgs e)
+    {
+        addCategory = e.Value?.ToString();
+        ChangeAddItemCategory();
+    }
+
+/* ==============================================================================
+ * ALERTS */
     private void ShowAlertBox()
     {
         alert = true;
     }
-
     private void CloseAlertBox()
     {
         alert = false;
